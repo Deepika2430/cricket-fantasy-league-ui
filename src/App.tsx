@@ -6,6 +6,8 @@ import AuthForm from './components/AuthForm';
 import Dashboard from './components/Dashboard';
 import BatsmanAnimation from './components/BatsmanAnimation';
 import Sidebar from './components/SideBar';
+import Home from './components/Home';
+import Layout from './components/layout';
 
 const REACT_APP_API_URL = "http://localhost:8080/api/v1"
 
@@ -59,7 +61,9 @@ function App() {
     <Routes>
       <Route path="/" element={<BatsmanAnimation />} />
       <Route path="/login" element={<AuthForm onLogin={handleLogin} />} />
-      <Route path="/dashboard" element={isAuthenticated ? <Sidebar
+      <Route path="/home" element={<Layout><Home /></Layout>} />
+      <Route path="/dashboard" element={<Layout><Dashboard /></Layout>} />
+      {/* <Route path="/dashboard" element={isAuthenticated ? <Sidebar
         userTeam={userTeam}
         addPlayerToTeam={(player: Player) => {
           setUserTeam((prevTeam) => ({
@@ -85,7 +89,7 @@ function App() {
         setTeamNameEdit={setTeamNameEdit}
         newTeamName={newTeamName}
         setNewTeamName={setNewTeamName}
-      /> : <Navigate to="/login" />} />
+      /> : <Navigate to="/login" />} /> */}
       <Route path="*" element={<Navigate to={isAuthenticated ? "/dashboard" : "/login"} />} />
     </Routes>
   );
