@@ -1,0 +1,88 @@
+.auth-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  background-image: url('https://wallpaperaccess.com/full/3468697.jpg');
+  background-size: cover;
+  background-position: center;
+}
+
+.auth-card {
+  background: rgba(255, 255, 255, 0.2); /* Semi-transparent white */
+  padding: 2rem;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  width: 100%;
+  max-width: 400px;
+  text-align: center;
+  backdrop-filter: blur(10px); /* Glass effect */
+  border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+.auth-card h2 {
+  margin-bottom: 1.5rem;
+  font-size: 1.5rem;
+  color: #333;
+  text-align: center;
+}
+
+.auth-card form {
+  display: flex;
+  flex-direction: column;
+}
+
+.auth-card label {
+  text-align: left;
+  margin-top: 10px;
+  margin-bottom: 0.5rem;
+  font-size: 0.9rem;
+  color: #555;
+}
+
+.auth-card input {
+  width: 100%;
+  padding: 8px;
+  margin: 8px 0;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 1rem;
+  background: url('https://upload.wikimedia.org/wikipedia/commons/4/4b/Cricket_Bat.jpg') no-repeat;
+  background-size: contain;
+  background-position: left;
+  padding-left: 50px;
+}
+
+.auth-card input:focus {
+  outline: none;
+  border-color: #007bff;
+}
+
+.auth-card button {
+  width: 100%;
+  padding: 10px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  margin-top: 10px;
+}
+
+.auth-card button:hover {
+  background-color: #0056b3;
+}
+
+.auth-card p {
+  margin-top: 10px;
+  text-align: center;
+  color: #007bff;
+  cursor: pointer;
+  font-size: 0.9rem;
+}
+
+.auth-card p:hover {
+  text-decoration: underline;
+}

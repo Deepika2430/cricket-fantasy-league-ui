@@ -1,0 +1,107 @@
+body {
+  margin: 0;
+  padding: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  background: linear-gradient(135deg, #1e3c72, #2a5298);
+  font-family: 'Poppins', sans-serif;
+}
+
+.bat-ball-container {
+  max-width: 400px;
+  width: 100%;
+  background: rgba(255, 255, 255, 0.1);
+  padding: 25px 30px;
+  border-radius: 15px;
+  backdrop-filter: blur(10px);
+  box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+}
+
+.bat-ball-container h2 {
+  text-align: center;
+  margin-bottom: 20px;
+  color: #fff;
+  font-size: 24px;
+  text-transform: uppercase;
+}
+
+.input-field {
+  position: relative;
+  margin-bottom: 25px;
+}
+
+.input-field input {
+  width: 100%;
+  padding: 10px;
+  background: transparent;
+  border: none;
+  outline: none;
+  color: #fff;
+  font-size: 16px;
+}
+
+.input-field label {
+  position: absolute;
+  top: 50%;
+  left: 10px;
+  transform: translateY(-50%);
+  color: #fff;
+  font-size: 16px;
+  pointer-events: none;
+  transition: 0.3s;
+}
+
+.input-field input:focus ~ label,
+.input-field input:valid ~ label {
+  top: -5px;
+  font-size: 12px;
+  color: #ffcc00;
+}
+
+/* Bat Input Styling */
+.bat-input input {
+  border-bottom: 3px solid #8b5a2b; /* Bat color */
+}
+
+.bat-input label {
+  color: #8b5a2b; /* Bat color */
+}
+
+.bat-input input:focus ~ label,
+.bat-input input:valid ~ label {
+  color: #ffcc00; /* Highlight color */
+}
+
+/* Ball Input Styling */
+.ball-input input {
+  border-bottom: 3px solid #ff0000; /* Ball color */
+}
+
+.ball-input label {
+  color: #ff0000; /* Ball color */
+}
+
+.ball-input input:focus ~ label,
+.ball-input input:valid ~ label {
+  color: #ffcc00; /* Highlight color */
+}
+
+button {
+  width: 100%;
+  padding: 10px;
+  background: #ffcc00;
+  border: none;
+  border-radius: 5px;
+  color: #1e3c72;
+  font-size: 16px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background 0.3s ease;
+}
+
+button:hover {
+  background: #e6b800;
+}
