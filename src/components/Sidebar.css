@@ -43,6 +43,7 @@
     align-items: center;
     padding: 12px 16px;
     transition: background-color 0.2s, padding-left 0.3s;
+    font-size: 16px; /* Increased font size */
 }
 
 .sidebar-menu-item:hover {

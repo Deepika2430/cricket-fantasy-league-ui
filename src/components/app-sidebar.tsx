@@ -26,12 +26,14 @@ import {
   SidebarMenuItem,
   SidebarFooter,
   SidebarHeader,
+  SidebarTrigger,
 } from "./ui/sidebar";
 import {
   Collapsible,
   CollapsibleTrigger,
   CollapsibleContent,
 } from "@radix-ui/react-collapsible";
+import { Tooltip, TooltipTrigger, TooltipContent } from "./ui/tooltip";
 
 const items = [
   {
@@ -104,46 +106,62 @@ export function AppSidebar() {
       side="left"
       variant="sidebar"
       collapsible="icon"
-      className="sidebar"
+      className="bg-gray-900 text-gray-300 w-[var(--sidebar-width)] transition-width duration-300"
     >
-      <SidebarHeader className="sidebar-header">
-        <a href="/" className="flex items-center justify-center h-16 w-11">
-          <img
-            src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRc6_t3ve2CECe9DUpoG7xdyh5xYDFP6B8kJQ&s"
-            alt="Logo"
-          />
-        </a>
+      <SidebarHeader className="flex  justify-center h-16 bg-gray-800 transition-colors duration-300 hover:bg-gray-700">
+        <div className="flex ">
+          <SidebarTrigger className="text-white left-0" />
+          {/* <a href="/" className="flex items-center justify-center h-16 w-11">
+            <img
+              src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRc6_t3ve2CECe9DUpoG7xdyh5xYDFP6B8kJQ&s"
+              alt="Logo"
+              className="h-10"
+            />
+          </a> */}
+        </div>
       </SidebarHeader>
       <SidebarContent>
         <SidebarGroup>
-          <SidebarGroupLabel className="sidebar-group-label">Fantasy League</SidebarGroupLabel>
+          <SidebarGroupLabel className="text-sm font-bold text-gray-400 p-4 transition-colors duration-300 hover:text-gray-200">
+            Fantasy League
+          </SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
               {items.map((item) => (
                 <SidebarMenuItem
                   key={item.title}
-                  className={`sidebar-menu-item ${activeItem === item.title ? "isActive" : ""}`}
+                  className={`flex items-center p-2 transition-colors duration-200 hover:bg-gray-800 ${
+                    activeItem === item.title ? "bg-gray-700" : ""
+                  }`}
                 >
-                  <SidebarMenuButton asChild className="sidebar-menu-button">
-                    <a
-                      href={item.url}
-                      onClick={() => handleItemClick(item.title)}
-                    >
-                      <item.icon />
-                      <span>{item.title}</span>
-                    </a>
-                  </SidebarMenuButton>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <SidebarMenuButton asChild className="flex items-center w-full text-inherit no-underline text-lg">
+                        <a
+                          href={item.url}
+                          onClick={() => handleItemClick(item.title)}
+                          className="flex items-center w-full"
+                        >
+                          <item.icon className="mr-2 text-2xl" /> {/* Increased icon size */}
+                          <span className="ml-2">{item.title}</span>
+                        </a>
+                      </SidebarMenuButton>
+                    </TooltipTrigger>
+                    <TooltipContent side="bottom" align="start">
+                      {item.title}
+                    </TooltipContent>
+                  </Tooltip>
                 </SidebarMenuItem>
               ))}
             </SidebarMenu>
           </SidebarGroupContent>
         </SidebarGroup>
-        <Collapsible defaultOpen className="group/collapsible">
+        <Collapsible defaultOpen className="group">
           <SidebarGroup>
-            <SidebarGroupLabel asChild className="collapsible-trigger">
-              <CollapsibleTrigger>
+            <SidebarGroupLabel asChild className="flex items-center cursor-pointer">
+              <CollapsibleTrigger className="flex items-center w-full">
                 Help
-                <ChevronDown className="chevron-down" />
+                <ChevronDown className="ml-auto transition-transform duration-200 group-data-[state=open]:rotate-180" />
               </CollapsibleTrigger>
             </SidebarGroupLabel>
             <CollapsibleContent>
@@ -152,17 +170,27 @@ export function AppSidebar() {
                   {helpItems.map((item) => (
                     <SidebarMenuItem
                       key={item.title}
-                      className={`sidebar-menu-item ${activeItem === item.title ? "isActive" : ""}`}
+                      className={`flex items-center p-2 transition-colors duration-200 hover:bg-gray-800 ${
+                        activeItem === item.title ? "bg-gray-700" : ""
+                      }`}
                     >
-                      <SidebarMenuButton asChild className="sidebar-menu-button">
-                        <a
-                          href={item.url}
-                          onClick={() => handleItemClick(item.title)}
-                        >
-                          <item.icon />
-                          <span>{item.title}</span>
-                        </a>
-                      </SidebarMenuButton>
+                      <Tooltip>
+                        <TooltipTrigger asChild>
+                          <SidebarMenuButton asChild className="flex items-center w-full text-inherit no-underline text-lg">
+                            <a
+                              href={item.url}
+                              onClick={() => handleItemClick(item.title)}
+                              className="flex items-center w-full"
+                            >
+                              <item.icon className="mr-2 text-2xl" /> {/* Increased icon size */}
+                              <span className="ml-2">{item.title}</span>
+                            </a>
+                          </SidebarMenuButton>
+                        </TooltipTrigger>
+                        <TooltipContent side="bottom" align="start">
+                          {item.title}
+                        </TooltipContent>
+                      </Tooltip>
                     </SidebarMenuItem>
                   ))}
                 </SidebarMenu>
@@ -171,19 +199,28 @@ export function AppSidebar() {
           </SidebarGroup>
         </Collapsible>
       </SidebarContent>
-      <SidebarFooter className="sidebar-footer">
+      <SidebarFooter className="p-2 bg-gray-800 transition-colors duration-300 hover:bg-gray-700">
         <SidebarMenu>
           {footerItems.map((item) => (
             <SidebarMenuItem
               key={item.title}
-              className={`sidebar-menu-item ${activeItem === item.title ? "isActive" : ""}`}
+              className={`flex items-center p-2 transition-colors duration-200 hover:bg-gray-800 ${
+                activeItem === item.title ? "bg-gray-700" : ""
+              }`}
             >
-              <SidebarMenuButton asChild className="sidebar-menu-button">
-                <a href={item.url} onClick={() => handleItemClick(item.title)}>
-                  <item.icon />
-                  <span>{item.title}</span>
-                </a>
-              </SidebarMenuButton>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <SidebarMenuButton asChild className="flex items-center w-full text-inherit no-underline text-lg">
+                    <a href={item.url} onClick={() => handleItemClick(item.title)} className="flex items-center w-full">
+                      <item.icon className="mr-2 text-2xl" /> {/* Increased icon size */}
+                      <span className="ml-2">{item.title}</span>
+                    </a>
+                  </SidebarMenuButton>
+                </TooltipTrigger>
+                <TooltipContent side="bottom" align="start">
+                  {item.title}
+                </TooltipContent>
+              </Tooltip>
             </SidebarMenuItem>
           ))}
         </SidebarMenu>
