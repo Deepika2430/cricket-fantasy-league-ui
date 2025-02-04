@@ -1,22 +1,28 @@
 import React from "react";
+import { useTheme } from "./ui/theme-provider";
 
 const Home: React.FC = () => {
+  const { theme } = useTheme();
   const applicationName = "Dream11"; // Replace with actual app name if different
 
   return (
-    <div className="min-h-screen bg-gray-900 text-white flex flex-col items-center justify-center p-6">
+    <div
+      className={`min-h-screen w-full flex flex-col items-center justify-center ${
+        theme === "dark" ? "bg-gray-900 text-white" : "bg-gray-100 text-black"
+      }`}
+    >
       {/* Heading */}
       <h1 className="text-4xl font-bold mb-4">🏏 Welcome to {applicationName} Fantasy Cricket! 🏆</h1>
-      <p className="text-lg text-gray-300 mb-6">
+      <p className={`text-lg mb-6 ${theme === "dark" ? "text-gray-300" : "text-gray-700"}`}>
         Play Fantasy Cricket on {applicationName} and win big!
       </p>
 
       {/* Introduction */}
       <div className="max-w-3xl text-center">
-        <p className="text-gray-300 mb-6">
+        <p className={`mb-6 ${theme === "dark" ? "text-gray-300" : "text-gray-700"}`}>
           Enter into the thrilling world of Fantasy sports, a strategy-based online sports game wherein you can create a virtual team of real players playing in real-life matches.
         </p>
-        <p className="text-gray-300 mb-6">
+        <p className={`mb-6 ${theme === "dark" ? "text-gray-300" : "text-gray-700"}`}>
           Create your team to win points based on all the players' performance in a live game.
         </p>
       </div>
@@ -30,8 +36,8 @@ const Home: React.FC = () => {
             <span className="text-3xl font-bold text-blue-500">1️⃣</span>
             <div>
               <h3 className="text-xl font-semibold">Select A Match</h3>
-              <p className="text-gray-400">Choose an upcoming match that you want to play.</p>
-              <p className="text-gray-300">Example: Dream11 MI vs CSK Match.</p>
+              <p className={`text-gray-400 ${theme === "dark" ? "text-gray-400" : "text-gray-600"}`}>Choose an upcoming match that you want to play.</p>
+              <p className={`text-gray-300 ${theme === "dark" ? "text-gray-300" : "text-gray-500"}`}>Example: Dream11 MI vs CSK Match.</p>
             </div>
           </div>
 
@@ -40,8 +46,8 @@ const Home: React.FC = () => {
             <span className="text-3xl font-bold text-green-500">2️⃣</span>
             <div>
               <h3 className="text-xl font-semibold">Create Your Team</h3>
-              <p className="text-gray-400">Use your skills to pick the right players.</p>
-              <p className="text-gray-300">Example: Select MI & CSK players wisely.</p>
+              <p className={`text-gray-400 ${theme === "dark" ? "text-gray-400" : "text-gray-600"}`}>Use your skills to pick the right players.</p>
+              <p className={`text-gray-300 ${theme === "dark" ? "text-gray-300" : "text-gray-500"}`}>Example: Select MI & CSK players wisely.</p>
             </div>
           </div>
 
@@ -50,8 +56,8 @@ const Home: React.FC = () => {
             <span className="text-3xl font-bold text-yellow-500">3️⃣</span>
             <div>
               <h3 className="text-xl font-semibold">Join Contests</h3>
-              <p className="text-gray-400">Choose between different contests and compete.</p>
-              <p className="text-gray-300">Example: Join paid or free contests for rewards.</p>
+              <p className={`text-gray-400 ${theme === "dark" ? "text-gray-400" : "text-gray-600"}`}>Choose between different contests and compete.</p>
+              <p className={`text-gray-300 ${theme === "dark" ? "text-gray-300" : "text-gray-500"}`}>Example: Join paid or free contests for rewards.</p>
             </div>
           </div>
         </div>

@@ -2,12 +2,12 @@ import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Ticket as Cricket, User, Lock, Mail } from 'lucide-react';
 
-function App() {
+function Login() {
   const [isLogin, setIsLogin] = useState(true);
   const [showForm, setShowForm] = useState(false);
 
   const startAnimation = async () => {
-    setTimeout(() => setShowForm(true), 3000);
+    setTimeout(() => setShowForm(true), 500);
   };
 
   React.useEffect(() => {
@@ -15,75 +15,14 @@ function App() {
   }, []);
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-green-800 to-green-600 flex items-center justify-center overflow-hidden relative">
+    <div className="min-h-screen bg-gradient-to-br flex items-center justify-center overflow-hidden relative">
       {/* Cricket Stadium Background */}
       <div
-        className="absolute inset-0 bg-cover bg-center opacity-20"
+        className="absolute inset-0 bg-cover bg-center opacity-100"
         style={{
           backgroundImage: "url('https://images.unsplash.com/photo-1531415074968-036ba1b575da?auto=format&fit=crop&q=80')"
         }}
       />
-
-      {/* Ball and Batsman Animation */}
-      <AnimatePresence>
-        {!showForm && (
-          <>
-            {/* Dynamic Batsman */}
-            <motion.img
-              src="src\data\cricket-player-ready-to-hit.png" // Replace with the actual image URL
-              alt="Batsman"
-              initial={{ x: -100, y: 50, scale: 0.8 }}
-              animate={{
-                rotate: [-10, 45, -10],
-                transition: {
-                  duration: 1.5,
-                  times: [0, 0.5, 1],
-                  repeat: 0,
-                },
-              }}
-              className="absolute left-1/4 bottom-1/3 w-75 h-75"
-            />
-
-            {/* Ball */}
-            <motion.div
-              initial={{ x: -80, y: 100 }}
-              animate={{
-                x: [-40, 400, 600],
-                y: [60, -150, 100],
-                scale: [1, 0.8, 1],
-                transition: {
-                  duration: 5.5,
-                  times: [0, 0.5, 1],
-                  type: "spring",
-                  bounce: 0.5,
-                },
-              }}
-              className="w-8 h-8 rounded-full bg-red-500 absolute"
-              style={{
-                boxShadow: "0 0 10px rgba(255,255,255,0.8)"
-              }}
-            />
-
-            {/* "SIX!" Text Animation */}
-            <motion.div
-              initial={{ opacity: 0, scale: 0, x: 300, y: -100 }}
-              animate={{
-                opacity: [0, 1, 1, 0],
-                scale: [0, 1.5, 1.5, 0],
-                transition: {
-                  duration: 2,
-                  times: [0, 0.2, 0.8, 1],
-                  delay: 1
-                }
-              }}
-              className="absolute text-6xl font-bold text-white"
-              style={{ textShadow: "2px 2px 4px rgba(0,0,0,0.3)" }}
-            >
-              SIX!
-            </motion.div>
-          </>
-        )}
-      </AnimatePresence>
 
       <AnimatePresence>
         {showForm && (
@@ -174,4 +113,4 @@ function App() {
   );
 }
 
-export default App;
+export default Login;
