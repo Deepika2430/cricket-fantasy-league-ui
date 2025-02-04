@@ -4,9 +4,9 @@ import App from './App';
 
 const AppWrapper: React.FC = () => {
   return (
-    <Router>
-      <App />
-    </Router>
+      <Router>
+        <App />
+      </Router>
   );
 };
 

@@ -1,10 +1,19 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom'; // Import useNavigate
 import { motion, AnimatePresence } from 'framer-motion';
 import { Ticket as Cricket, User, Lock, Mail } from 'lucide-react';
+import { login, signup } from '../services/AuthService';
+import Cookies from 'js-cookie'; // Import js-cookie
 
-function Login() {
+function Login({ setIsAuthenticated }) {
   const [isLogin, setIsLogin] = useState(true);
-  const [showForm, setShowForm] = useState(false);
+  const [showForm, setShowForm] = useState(true);
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [username, setUsername] = useState('');
+  const [name, setName] = useState('');
+  const [error, setError] = useState(''); // State for error message
+  const navigate = useNavigate();
 
   const startAnimation = async () => {
     setTimeout(() => setShowForm(true), 500);
@@ -14,8 +23,33 @@ function Login() {
     startAnimation();
   }, []);
 
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    try {
+      let token, userId;
+      if (isLogin) {
+        const response = await login(email, password);
+        token = response?.data?.token;
+        userId = response?.data?.user?.ID;
+      } else {
+        const response = await signup(username, email, password, name);
+        token = response?.data?.token;
+        userId = response?.data?.data?.user?.id;
+      }
+      Cookies.set('authToken', token);
+      Cookies.set('userId', userId);
+      console.log('Token----------', token, Cookies.get('authToken'));
+      setIsAuthenticated(true);
+      navigate('/home');
+    } catch (error) {
+      console.log(error);
+      setError('Authentication failed. Please check your credentials and try again.');
+    }
+  };
+
   return (
-    <div className="min-h-screen bg-gradient-to-br flex items-center justify-center overflow-hidden relative">
+    <div className="min-h-screen bg-gradient-to-br from-green-800 to-green-600 flex items-center justify-center overflow-hidden relative">
       {/* Cricket Stadium Background */}
       <div
         className="absolute inset-0 bg-cover bg-center opacity-100"
@@ -42,21 +76,40 @@ function Login() {
               </p>
             </div>
 
-            <form className="space-y-6">
+            <form className="space-y-6" onSubmit={handleSubmit}>
               {!isLogin && (
-                <div>
-                  <label className="block text-sm font-medium text-gray-700">
-                    Username
-                  </label>
-                  <div className="mt-1 relative">
-                    <User className="w-5 h-5 text-gray-400 absolute left-3 top-3" />
-                    <input
-                      type="text"
-                      className="pl-10 w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
-                      placeholder="Enter your username"
-                    />
+                <>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700">
+                      Name
+                    </label>
+                    <div className="mt-1 relative">
+                      <User className="w-5 h-5 text-gray-400 absolute left-3 top-3" />
+                      <input
+                        type="text"
+                        className="pl-10 w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                        placeholder="Enter your name"
+                        value={name}
+                        onChange={(e) => setName(e.target.value)}
+                      />
+                    </div>
                   </div>
-                </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700">
+                      Username
+                    </label>
+                    <div className="mt-1 relative">
+                      <User className="w-5 h-5 text-gray-400 absolute left-3 top-3" />
+                      <input
+                        type="text"
+                        className="pl-10 w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                        placeholder="Enter your username"
+                        value={username}
+                        onChange={(e) => setUsername(e.target.value)}
+                      />
+                    </div>
+                  </div>
+                </>
               )}
 
               <div>
@@ -69,6 +122,8 @@ function Login() {
                     type="email"
                     className="pl-10 w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
                     placeholder="Enter your email"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
                   />
                 </div>
               </div>
@@ -83,9 +138,17 @@ function Login() {
                     type="password"
                     className="pl-10 w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
                     placeholder="Enter your password"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
                   />
                 </div>
               </div>
+
+              {error && (
+                <div className="text-red-500 text-sm text-center">
+                  {error}
+                </div>
+              )}
 
               <motion.button
                 whileHover={{ scale: 1.02 }}
