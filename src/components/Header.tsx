@@ -1,11 +1,9 @@
 import { ModeToggle } from "./ui/mode-toogle";
 import { useTheme } from "./ui/theme-provider";
-import { useSidebar } from "./ui/sidebar";
 import { SidebarTrigger } from "./ui/sidebar";
 
 export function Header() {
   const { theme } = useTheme();
-  const { state } = useSidebar();
 
   return (
     <header
@@ -14,7 +12,7 @@ export function Header() {
       }`}
     >
       <div className="flex items-center gap-x-4">
-        <SidebarTrigger className="text-white left-0" />
+        <SidebarTrigger className={`left-0 ${theme === "dark" ? "text-white" : "text-black"}`} />
         <a href="/">
           <img
             src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRc6_t3ve2CECe9DUpoG7xdyh5xYDFP6B8kJQ&s"
@@ -22,7 +20,7 @@ export function Header() {
             className="h-10 border-2 border-gray-200 rounded-full"
           />
         </a>
-        <h1 className={`text-2xl font-bold ${theme === "dark" ? "text-white" : "text-black"}`}>My App</h1>
+        <h1 className={`text-2xl font-bold ${theme === "dark" ? "text-white" : "text-black"}`}>Cricket Fantasy League</h1>
       </div>
       <ModeToggle />
     </header>

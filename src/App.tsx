@@ -5,6 +5,7 @@ import Login from './components/Login';
 import Home from './components/Home';
 import Layout from './components/Layout';
 import Profile from './components/Profile';
+import Matches from './components/Matches';
 
 function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -27,6 +28,7 @@ function App() {
       <Route path="*" element={<Navigate to={isAuthenticated ? "/dashboard" : "/login"} />} /> */}
       <Route path="/login" element={<Login setIsAuthenticated={setIsAuthenticated} />} />
       <Route path="/home" element={<Layout><Home /></Layout>} />
+      <Route path="/matches" element={<Layout><Matches /></Layout>} />
       <Route path="/dashboard" element={ <Layout><Dashboard /></Layout>} />
       <Route path="/profile" element={<Layout><Profile /></Layout>} />
       <Route path="*" element={<Navigate to={isAuthenticated ? "/dashboard" : "/login"} />} />
