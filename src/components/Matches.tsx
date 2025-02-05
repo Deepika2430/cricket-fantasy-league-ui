@@ -127,9 +127,9 @@ const Matches = () => {
             </DialogTrigger>
 
             {selectedMatch && (
-              <DialogContent className="max-w-3xl text-white">
+              <DialogContent className={`max-w-3xl ${theme === "dark" ? "bg-gray-900 text-white" : "bg-gray-100 text-black"}`}>
                 <DialogHeader>
-                  <DialogTitle className="text-center text-2xl text-white">Match Details</DialogTitle>
+                  <DialogTitle className="text-center text-2xl">Match Details</DialogTitle>
                   <DialogDescription className="text-center">
                     {selectedMatch.venue} - {new Date(selectedMatch.match_date).toLocaleString()}
                   </DialogDescription>
