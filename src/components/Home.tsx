@@ -1,5 +1,6 @@
 import React from "react";
 import { useTheme } from "./ui/theme-provider";
+import CricketLiveScore from "./CricketLiveScore";
 
 const Home: React.FC = () => {
   const { theme } = useTheme();
@@ -11,6 +12,7 @@ const Home: React.FC = () => {
         theme === "dark" ? "bg-gray-900 text-white" : "bg-gray-100 text-black"
       }`}
     >
+      <CricketLiveScore />
       {/* Heading */}
       <h1 className="text-4xl font-bold mb-4">🏏 Welcome to {applicationName} Fantasy Cricket! 🏆</h1>
       <p className={`text-lg mb-6 ${theme === "dark" ? "text-gray-300" : "text-gray-700"}`}>
