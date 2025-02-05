@@ -127,9 +127,9 @@ const Matches = () => {
             </DialogTrigger>
 
             {selectedMatch && (
-              <DialogContent className="max-w-3xl">
+              <DialogContent className="max-w-3xl text-white">
                 <DialogHeader>
-                  <DialogTitle className="text-center text-2xl">Match Details</DialogTitle>
+                  <DialogTitle className="text-center text-2xl text-white">Match Details</DialogTitle>
                   <DialogDescription className="text-center">
                     {selectedMatch.venue} - {new Date(selectedMatch.match_date).toLocaleString()}
                   </DialogDescription>
@@ -160,8 +160,8 @@ const Matches = () => {
                     <div className="flex flex-col items-center">
                       <span className="text-2xl font-bold mb-4">VS</span>
                       {selectedMatch.status === "live" && (
-                        <div className="px-4 py-2 bg-red-500 text-white rounded-full animate-pulse">
-                          LIVE
+                        <div className="px-4 py-2 bg-red-500 text-white rounded-lg animate-pulse">
+                         ⚪ LIVE 
                         </div>
                       )}
                     </div>

@@ -1,9 +1,10 @@
 import { SidebarProvider } from "./ui/sidebar";
 import { ThemeProvider } from "./ui/theme-provider";
 import { AppSidebar } from "./app-sidebar";
-import { Header } from "./Header"; // Import the Header component
+import { Header } from "./Header";
+import { Outlet } from "react-router-dom";
 
-export default function Layout({ children }: { children: React.ReactNode }) {
+export default function Layout() {
   return (
     <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
       <SidebarProvider className="h-screen flex w-[100%]">
@@ -13,12 +14,14 @@ export default function Layout({ children }: { children: React.ReactNode }) {
           {/* Sidebar and Main Content Wrapper */}
           <div className="flex flex-1 overflow-hidden">
             {/* Sidebar on the left (fixed width) */}
-            <div className="">
+            <div>
               <AppSidebar />
             </div>
 
-            {/* Main content on the right */}
-            <main className="flex-1 overflow-auto">{children}</main>
+            {/* Main content updates dynamically */}
+            <main className="flex-1 overflow-auto">
+              <Outlet /> {/* Dynamic content will be rendered here */}
+            </main>
           </div>
         </div>
       </SidebarProvider>

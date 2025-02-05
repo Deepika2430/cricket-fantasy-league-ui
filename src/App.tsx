@@ -27,10 +27,12 @@ function App() {
       <Route path="/profile" element={isAuthenticated ? <Layout><Profile /></Layout> : <Navigate to="/login" />} />
       <Route path="*" element={<Navigate to={isAuthenticated ? "/dashboard" : "/login"} />} /> */}
       <Route path="/login" element={<Login setIsAuthenticated={setIsAuthenticated} />} />
-      <Route path="/home" element={<Layout><Home /></Layout>} />
-      <Route path="/matches" element={<Layout><Matches /></Layout>} />
-      <Route path="/dashboard" element={ <Layout><Dashboard /></Layout>} />
-      <Route path="/profile" element={<Layout><Profile /></Layout>} />
+      <Route element={<Layout />}>
+          <Route path="/home" element={<Home />} />
+          <Route path="/matches" element={<Matches />} />
+          <Route path="/profile" element={<Profile />} />
+          <Route path="/dashboard" element={<Dashboard />} />
+        </Route>
       <Route path="*" element={<Navigate to={isAuthenticated ? "/dashboard" : "/login"} />} />
     </Routes>
   );

@@ -35,7 +35,7 @@ import {
 import { Tooltip, TooltipTrigger, TooltipContent } from "./ui/tooltip";
 import { useTheme } from "./ui/theme-provider";
 import { useSidebar } from "./ui/sidebar";
-import { useLocation } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 
 const items = [
   {
@@ -64,7 +64,7 @@ const items = [
     icon: Users,
   },
   {
-    title:"Friends",
+    title: "Friends",
     url: "#",
     icon: Users,
   },
@@ -126,17 +126,25 @@ export function AppSidebar() {
       collapsible="icon"
       className={`w-[var(--sidebar-width)] ${
         state === "collapsed" ? "transition-width duration-300" : ""
-      } ${theme === "dark" ? "bg-gray-900 text-gray-300" : "bg-gray-100 text-gray-800"} overflow-hidden border-r-2 ${theme === "dark" ? "border-gray-800" : "border-gray-400"}`}
+      } ${
+        theme === "dark"
+          ? "bg-gray-900 text-gray-300"
+          : "bg-gray-100 text-gray-800"
+      } overflow-hidden border-r-2 ${
+        theme === "dark" ? "border-gray-800" : "border-gray-400"
+      }`}
     >
       <SidebarHeader className="p-4"></SidebarHeader>
       <SidebarContent className="overflow-hidden hover:overflow-y-auto">
         <SidebarGroup>
           <SidebarGroupLabel
             className={`left-0 text-lg font-bold p-8 mt-4 duration-700 ${
-              theme === "dark" ? "text-gray-400 hover:text-gray-200" : "text-gray-600 hover:text-gray-800"
+              theme === "dark"
+                ? "text-gray-400 hover:text-gray-200"
+                : "text-gray-600 hover:text-gray-800"
             }`}
           >
-          Fantasy League
+            Fantasy League
           </SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
@@ -155,15 +163,18 @@ export function AppSidebar() {
                 >
                   <Tooltip>
                     <TooltipTrigger asChild>
-                      <SidebarMenuButton asChild className="flex items-center w-full text-inherit no-underline text-lg">
-                        <a
-                          href={item.url}
+                      <SidebarMenuButton
+                        asChild
+                        className="flex items-center w-full text-inherit no-underline text-lg"
+                      >
+                        <Link
+                          to={item.url}
                           onClick={() => handleItemClick(item.title)}
                           className="flex items-center w-full"
                         >
                           <item.icon className="mr-2 text-2xl" />
                           <span className="ml-2">{item.title}</span>
-                        </a>
+                        </Link>
                       </SidebarMenuButton>
                     </TooltipTrigger>
                     <TooltipContent
@@ -171,7 +182,9 @@ export function AppSidebar() {
                       align="center"
                       hidden={state !== "collapsed"}
                       className={`${
-                        theme === "dark" ? "bg-white text-black" : "bg-black text-white"
+                        theme === "dark"
+                          ? "bg-white text-black"
+                          : "bg-black text-white"
                       }`}
                     >
                       {item.title}
@@ -183,9 +196,15 @@ export function AppSidebar() {
           </SidebarGroupContent>
         </SidebarGroup>
         {state !== "collapsed" && (
-          <Collapsible defaultOpen className="group text-center justify-center items-center">
+          <Collapsible
+            defaultOpen
+            className="group text-center justify-center items-center"
+          >
             <SidebarGroup>
-              <SidebarGroupLabel asChild className="flex items-center cursor-pointer text-lg justify-center">
+              <SidebarGroupLabel
+                asChild
+                className="flex items-center cursor-pointer text-lg justify-center"
+              >
                 <CollapsibleTrigger className="flex items-center w-full justify-center">
                   Help
                   <ChevronDown className="ml-auto transition-transform duration-200 group-data-[state=open]:rotate-180" />
@@ -209,15 +228,18 @@ export function AppSidebar() {
                       >
                         <Tooltip>
                           <TooltipTrigger asChild>
-                            <SidebarMenuButton asChild className="flex items-center w-full text-inherit no-underline text-lg">
-                              <a
-                                href={item.url}
+                            <SidebarMenuButton
+                              asChild
+                              className="flex items-center w-full text-inherit no-underline text-lg"
+                            >
+                              <Link
+                                to={item.url}
                                 onClick={() => handleItemClick(item.title)}
                                 className="flex items-center w-full"
                               >
                                 <item.icon className="mr-2 text-2xl" />
                                 <span className="ml-2">{item.title}</span>
-                              </a>
+                              </Link>
                             </SidebarMenuButton>
                           </TooltipTrigger>
                           <TooltipContent
@@ -225,7 +247,9 @@ export function AppSidebar() {
                             align="center"
                             hidden={state !== "collapsed"}
                             className={`${
-                              theme === "dark" ? "bg-white text-black" : "bg-black text-white"
+                              theme === "dark"
+                                ? "bg-white text-black"
+                                : "bg-black text-white"
                             }`}
                           >
                             {item.title}
@@ -242,7 +266,9 @@ export function AppSidebar() {
       </SidebarContent>
       <SidebarFooter
         className={`p-2 transition-colors duration-300 ${
-          theme === "dark" ? "bg-gray-800 hover:bg-gray-700" : "bg-gray-200 hover:bg-gray-300"
+          theme === "dark"
+            ? "bg-gray-800 hover:bg-gray-700"
+            : "bg-gray-200 hover:bg-gray-300"
         }`}
       >
         <SidebarMenu>
@@ -261,11 +287,18 @@ export function AppSidebar() {
             >
               <Tooltip>
                 <TooltipTrigger asChild>
-                  <SidebarMenuButton asChild className="flex items-center w-full text-inherit no-underline text-lg">
-                    <a href={item.url} onClick={() => handleItemClick(item.title)} className="flex items-center w-full">
+                  <SidebarMenuButton
+                    asChild
+                    className="flex items-center w-full text-inherit no-underline text-lg"
+                  >
+                    <Link
+                      to={item.url}
+                      onClick={() => handleItemClick(item.title)}
+                      className="flex items-center w-full"
+                    >
                       <item.icon className="mr-2 text-2xl" />
                       <span className="ml-2">{item.title}</span>
-                    </a>
+                    </Link>
                   </SidebarMenuButton>
                 </TooltipTrigger>
                 <TooltipContent
@@ -273,7 +306,9 @@ export function AppSidebar() {
                   align="center"
                   hidden={state !== "collapsed"}
                   className={`${
-                    theme === "dark" ? "bg-white text-black" : "bg-black text-white"
+                    theme === "dark"
+                      ? "bg-white text-black"
+                      : "bg-black text-white"
                   }`}
                 >
                   {item.title}
