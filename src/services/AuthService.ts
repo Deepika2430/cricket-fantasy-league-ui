@@ -1,13 +1,22 @@
-const API_URL = 'http://192.168.2.14:8080/api/v1';
+import config from '../config';
+import { jwtDecode } from 'jwt-decode';
+import { useAuth } from '../context/AuthContext';
+
+export const getUserFromToken = async (token: string) => {
+  const tokenDetails = jwtDecode(token);
+  const userId = tokenDetails?.['user_id'];
+  return userId;
+};
 
 export const login = async (email: string, password: string) => {
-  const response = await fetch(`${API_URL}/auth/login`, {
+  const requestOptions: RequestInit = {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
     },
     body: JSON.stringify({ email, password }),
-  });
+  };
+  const response = await fetch(`${config.apiBaseUrl}/auth/login`, requestOptions);
 
   const data = await response.json();
 
@@ -20,16 +29,18 @@ export const login = async (email: string, password: string) => {
 };
 
 export const signup = async (username: string, email: string, password: string, name: string) => {
-  const response = await fetch(`${API_URL}/auth/signup`, {
+  const requestOptions: RequestInit = {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
     },
     body: JSON.stringify({ username, email, password, name }),
-  });
+  };
+  const response = await fetch(`${config.apiBaseUrl}/auth/signup`, requestOptions);
 
   const data = await response.json();
 
+  console.log(data);
   if (!response.ok) {
     throw new Error(data.message || 'Signup failed');
   }
