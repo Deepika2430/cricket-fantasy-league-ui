@@ -1,11 +1,11 @@
 import React, { useEffect } from 'react';
-import avatarImage from '../data/cricket-player-ready-to-hit.png'; // Make sure to have an avatar image in the assets folder
+import avatarImage from '../data/cricket-player-ready-to-hit.png';
 import { Coins, CalendarDays, MapPin, Trophy, Activity } from 'lucide-react';
 import cookie from 'js-cookie';
 import { Card, CardContent, CardHeader } from '../components/ui/card';
 import { Badge } from '../components/ui/badge';
 import { cn } from '../components/ui/lib/utils';
-import { getUserDetails, getUserMatches } from '../services/userService'; // Import the service functions
+import { getUserDetailsById, getUserMatches } from '../services/UserService';
 
 // MatchCard component
 const MatchCard: React.FC<{ match: any }> = ({ match }) => {
@@ -82,12 +82,13 @@ const Profile: React.FC = () => {
   useEffect(() => {
     const userId = cookie.get('userId');
     console.log(userId);
-    getUserDetails(userId).then(details => {
+    getUserDetailsById(userId).then(details => {
       setUserDetails(details);
       console.log(details);
     });
 
     getUserMatches(userId).then(matches => {
+      console.log(matches)
       setUserMatches(matches.data);
       console.log(matches.data);
     });
@@ -99,19 +100,19 @@ const Profile: React.FC = () => {
     <div className="p-4">
       <div className="flex justify-between items-center mb-4">
         <img
-          src={userDetails.ProfilePictureURL || avatarImage}
+          src={userDetails?.data?.ProfilePictureURL || avatarImage}
           alt="Avatar"
           className="w-16 h-16 rounded-full border-2 border-gray-300 shadow-md hover:shadow-lg transition-shadow duration-300"
         />
         <div className="flex items-center text-lg font-bold">
           <Coins className="w-6 h-6 text-yellow-500 mr-2" />
-          {userCoins}
+          {userDetails?.data?.TotalPoints}
         </div>
       </div>
       <div className="mt-4">
         <h2 className="text-xl font-semibold mb-2">Match Details</h2>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-          {userMatches.map((match, index) => (
+          {userMatches?.map((match, index) => (
             <MatchCard key={index} match={match} /> // Use MatchCard component
           ))}
         </div>

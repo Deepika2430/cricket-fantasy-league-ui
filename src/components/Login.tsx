@@ -1,19 +1,20 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom'; // Import useNavigate
+import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Ticket as Cricket, User, Lock, Mail } from 'lucide-react';
 import { login, signup } from '../services/AuthService';
-import Cookies from 'js-cookie'; // Import js-cookie
+import { useAuth } from '../context/AuthContext';
 
-function Login({ setIsAuthenticated }) {
+function Login() {
   const [isLogin, setIsLogin] = useState(true);
   const [showForm, setShowForm] = useState(true);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [username, setUsername] = useState('');
   const [name, setName] = useState('');
-  const [error, setError] = useState(''); // State for error message
+  const [error, setError] = useState('');
   const navigate = useNavigate();
+  const { setToken } = useAuth();
 
   const startAnimation = async () => {
     setTimeout(() => setShowForm(true), 500);
@@ -23,24 +24,18 @@ function Login({ setIsAuthenticated }) {
     startAnimation();
   }, []);
 
-
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      let token, userId;
+      let token;
       if (isLogin) {
         const response = await login(email, password);
         token = response?.data?.token;
-        userId = response?.data?.user?.ID;
       } else {
         const response = await signup(username, email, password, name);
         token = response?.data?.token;
-        userId = response?.data?.data?.user?.id;
       }
-      Cookies.set('authToken', token);
-      Cookies.set('userId', userId);
-      console.log('Token----------', token, Cookies.get('authToken'));
-      setIsAuthenticated(true);
+      await setToken(token);
       navigate('/home');
     } catch (error) {
       console.log(error);
@@ -54,7 +49,7 @@ function Login({ setIsAuthenticated }) {
       <div
         className="absolute inset-0 bg-cover bg-center opacity-100"
         style={{
-          backgroundImage: "url('https://images.unsplash.com/photo-1531415074968-036ba1b575da?auto=format&fit=crop&q=80')"
+          backgroundImage: "url('https://images.unsplash.com/photo-1531415074968-036ba1b575da?auto=format&fit=crop&q=80')",
         }}
       />
 
@@ -63,7 +58,7 @@ function Login({ setIsAuthenticated }) {
           <motion.div
             initial={{ scale: 0, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
-            transition={{ type: "spring", duration: 0.8 }}
+            transition={{ type: 'spring', duration: 0.8 }}
             className="bg-white/90 backdrop-blur-sm p-8 rounded-lg shadow-2xl w-full max-w-md relative z-10"
           >
             <div className="text-center mb-8">
@@ -72,7 +67,7 @@ function Login({ setIsAuthenticated }) {
                 Cricket Fantasy League
               </h1>
               <p className="text-gray-600 mt-2">
-                {isLogin ? "Welcome back!" : "Join the excitement!"}
+                {isLogin ? 'Welcome back!' : 'Join the excitement!'}
               </p>
             </div>
 
@@ -155,7 +150,7 @@ function Login({ setIsAuthenticated }) {
                 whileTap={{ scale: 0.98 }}
                 className="w-full bg-green-600 text-white py-3 rounded-lg font-semibold hover:bg-green-700 transition-colors"
               >
-                {isLogin ? "Sign In" : "Sign Up"}
+                {isLogin ? 'Sign In' : 'Sign Up'}
               </motion.button>
             </form>
 
@@ -165,8 +160,8 @@ function Login({ setIsAuthenticated }) {
                 className="text-green-600 hover:text-green-700 font-medium"
               >
                 {isLogin
-                  ? "Need an account? Sign up"
-                  : "Already have an account? Sign in"}
+                  ? 'Need an account? Sign up'
+                  : 'Already have an account? Sign in'}
               </button>
             </div>
           </motion.div>
