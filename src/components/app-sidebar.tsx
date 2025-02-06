@@ -5,14 +5,11 @@ import {
   Home,
   LogOut,
   CircleUserRound,
-  Search,
   Settings,
-  User as Profile,
-  ChevronDown,
-  HelpCircle,
-  Info,
   Users,
+  HelpCircle,
   Send,
+  ChevronDown,
 } from "lucide-react";
 
 import {
@@ -46,7 +43,7 @@ const items = [
   {
     title: "My Profile",
     url: "/profile",
-    icon: Profile,
+    icon: CircleUserRound,
   },
   {
     title: "Matches",
@@ -55,7 +52,7 @@ const items = [
   },
   {
     title: "Teams",
-    url: "#",
+    url: "/team",
     icon: Handshake,
   },
   {
