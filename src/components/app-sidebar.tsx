@@ -57,12 +57,12 @@ const items = [
   },
   {
     title: "Groups",
-    url: "#",
+    url: "/groups",
     icon: Users,
   },
   {
     title: "Friends",
-    url: "#",
+    url: "/friends",
     icon: Users,
   },
   {
