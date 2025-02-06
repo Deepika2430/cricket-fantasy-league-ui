@@ -168,7 +168,7 @@ export default function Account() {
         {/* Change Password Dialog */}
         {isChangePasswordDialogOpen && (
           <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
-            <div className={`bg-white rounded-lg p-6 shadow-lg ${theme === "dark" ? "bg-gray-800 text-white" : "bg-white text-black"}`}>
+            <div className={`rounded-lg p-6 shadow-lg ${theme === "dark" ? "bg-gray-800 text-white" : "bg-white text-black"}`}>
               <h3 className="text-lg font-semibold mb-4">Change Password</h3>
               <div>
                 <label className="block text-sm font-medium mb-1">Old Password</label>
@@ -177,7 +177,7 @@ export default function Account() {
                     type={showOldPassword ? "text" : "password"}
                     value={oldPassword}
                     onChange={(e) => setOldPassword(e.target.value)}
-                    className={`w-full p-2 border rounded-lg transition-colors ${theme === "dark" ? "bg-gray-700 text-white border-gray-600" : "bg-white text-gray-900"} focus:ring-2 focus:ring-blue-500`}
+                    className={`w-full p-2 border rounded-lg transition-colors ${theme === "dark" ? "text-white bg-gray-800 border-gray-600" : "bg-white text-gray-900"} focus:ring-2 focus:ring-blue-500`}
                   />
                   <button
                     type="button"
@@ -195,7 +195,7 @@ export default function Account() {
                     type={showNewPassword ? "text" : "password"}
                     value={newPassword}
                     onChange={(e) => setNewPassword(e.target.value)}
-                    className={`w-full p-2 border rounded-lg transition-colors ${theme === "dark" ? "bg-gray-700 text-white border-gray-600" : "bg-white text-gray-900"} focus:ring-2 focus:ring-blue-500`}
+                    className={`w-full p-2 border rounded-lg transition-colors ${theme === "dark" ? "text-white bg-gray-800 border-gray-600" : "bg-white text-gray-900"} focus:ring-2 focus:ring-blue-500`}
                   />
                   <button
                     type="button"
@@ -214,7 +214,11 @@ export default function Account() {
                   Update
                 </button>
                 <button
-                  onClick={() => setIsChangePasswordDialogOpen(false)}
+                  onClick={() => {
+                    setIsChangePasswordDialogOpen(false);
+                    setOldPassword(""); // Clear old password
+                    setNewPassword(""); // Clear new password
+                  }}
                   className="px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition"
                 >
                   Cancel
