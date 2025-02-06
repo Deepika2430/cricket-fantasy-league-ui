@@ -13,9 +13,10 @@ import {
 } from "./ui/dialog";
 import { Button } from "./ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
-import { getMatches, getTeamPlayers } from "../services/matches";
+import { getMatches, getTeamPlayers } from "../services/Matches";
 import type { Match, Player } from "../types/match";
 import { Loader2 } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 const Matches = () => {
   const [matches, setMatches] = useState<Match[]>([]);
@@ -27,18 +28,16 @@ const Matches = () => {
   const [team2Players, setTeam2Players] = useState<Player[]>([]);
   const { theme } = useTheme();
   const { state } = useSidebar();
+  const navigate = useNavigate();
 
   useEffect(() => {
     fetchMatches();
   }, []);
 
+const playerLogo = "https://www.my11circle.com/fantasy-sports/wp-content/uploads/2022/07/player-icon.png";
+
   useEffect(() => {
-    if (selectedMatch) {
-      fetchTeamPlayers(
-        selectedMatch.team1.team_id,
-        selectedMatch.team2.team_id
-      );
-    }
+    fetchTeamPlayers();
   }, [selectedMatch]);
 
   useEffect(() => {
@@ -77,19 +76,21 @@ const Matches = () => {
     }
   };
 
-  const fetchTeamPlayers = async (team1Id: number, team2Id: number) => {
-    setLoadingPlayers(true);
-    try {
-      const [team1PlayersData, team2PlayersData] = await Promise.all([
-        getTeamPlayers(team1Id),
-        getTeamPlayers(team2Id),
-      ]);
-      setTeam1Players(team1PlayersData);
-      setTeam2Players(team2PlayersData);
-    } catch (error) {
-      console.error("Failed to fetch team players:", error);
-    } finally {
-      setLoadingPlayers(false);
+  const fetchTeamPlayers = async () => {
+    if (selectedMatch) {
+      setLoadingPlayers(true);
+      try {
+        const team1PlayersData = await getTeamPlayers(selectedMatch.team1.team_id);
+        const team2PlayersData = await getTeamPlayers(selectedMatch.team2.team_id);
+        const team1 = team1PlayersData?.team?.players;
+        const team2 = team2PlayersData?.team?.players;
+        setTeam1Players(Object.values(team1));
+        setTeam2Players(Object.values(team2));
+      } catch (error) {
+        console.error("Failed to fetch team players:", error);
+      } finally {
+        setLoadingPlayers(false);
+      }
     }
   };
 
@@ -104,6 +105,15 @@ const Matches = () => {
 
     return `${hours}h ${minutes}m ${seconds}s`;
   };
+
+  function teamCreation(
+    event: React.MouseEvent<HTMLButtonElement, MouseEvent>
+  ): void {
+    event.preventDefault();
+    if (selectedMatch) {
+      navigate("/team", { state: { match: selectedMatch } });
+    }
+  }
 
   const handleCardClick = (match: Match) => setSelectedMatch(match);
 
@@ -149,19 +159,19 @@ const Matches = () => {
 )}
 
                   <img
-                    src={match.team1.logo}
-                    alt={match.team1.name}
+                    src={match?.team1?.logo}
+                    alt={match.team1.team_name}
                     className="h-16 w-16 rounded-full object-contain"
                   />
                   <span className="text-xl font-semibold">VS</span>
                   <img
                     src={match.team2.logo}
-                    alt={match.team2.name}
+                    alt={match.team2.team_name}
                     className="h-16 w-16 rounded-full object-contain"
                   />
                 </div>
                 <p className="text-center mt-2 font-semibold">
-                  {match.team1.name} vs {match.team2.name}
+                  {match.team1.team_name} vs {match.team2.team_name}
                 </p>
                 <p
                   className={`text-center ${
@@ -180,7 +190,7 @@ const Matches = () => {
 
             {selectedMatch && (
               <DialogContent
-                className={`max-w-3xl ${
+              className={`max-w-3xl max-h-[90vh] overflow-y-auto scrollbar-none ${
                   theme === "dark"
                     ? "bg-gray-900 text-white"
                     : "bg-gray-100 text-black"
@@ -205,26 +215,26 @@ const Matches = () => {
                     <div className="flex flex-col items-center">
                       <img
                         src={selectedMatch.team1.logo}
-                        alt={selectedMatch.team1.name}
+                        alt={selectedMatch.team1.team_name}
                         className="h-20 w-20 rounded-full object-contain"
                       />
                       <p className="mt-2 text-lg font-semibold">
-                        {selectedMatch.team1.name}
+                        {selectedMatch.team1.team_name}
                       </p>
                       <div className="mt-4 space-y-3">
-                        {team1Players.map((player) => (
+                        {team1Players?.map((player) => (
                           <div
-                            key={player.id}
+                            key={player.PlayerID}
                             className="flex items-center space-x-2"
                           >
                             <Avatar>
                               <AvatarImage
-                                src={player.avatar}
-                                alt={player.name}
+                                src={player.Avatar || playerLogo}
+                                alt={player.Name}
                               />
-                              <AvatarFallback>{player.name[0]}</AvatarFallback>
+                              <AvatarFallback>{player.Name}</AvatarFallback>
                             </Avatar>
-                            <p>{player.name}</p>
+                            <p>{player.Name}</p>
                           </div>
                         ))}
                       </div>
@@ -242,26 +252,26 @@ const Matches = () => {
                     <div className="flex flex-col items-center">
                       <img
                         src={selectedMatch.team2.logo}
-                        alt={selectedMatch.team2.name}
+                        alt={selectedMatch.team2.team_name}
                         className="h-20 w-20 rounded-full object-contain"
                       />
                       <p className="mt-2 text-lg font-semibold">
-                        {selectedMatch.team2.name}
+                        {selectedMatch.team2.team_name}
                       </p>
                       <div className="mt-4 space-y-3">
-                        {team2Players.map((player) => (
+                        {team2Players?.map((player) => (
                           <div
-                            key={player.id}
+                            key={player.PlayerID}
                             className="flex items-center space-x-2"
                           >
                             <Avatar>
                               <AvatarImage
-                                src={player.avatar}
-                                alt={player.name}
+                                src={player.Avatar || playerLogo}
+                                alt={player.Name}
                               />
-                              <AvatarFallback>{player.name[0]}</AvatarFallback>
+                              <AvatarFallback>{player.Name}</AvatarFallback>
                             </Avatar>
-                            <p>{player.name}</p>
+                            <p>{player.Name}</p>
                           </div>
                         ))}
                       </div>
@@ -269,9 +279,18 @@ const Matches = () => {
                   </div>
                 )}
 
+
                 <DialogFooter>
                   {selectedMatch.status !== "live" && (
-                    <Button size="lg" className="w-full sm:w-auto">
+                    <Button
+                      size="lg"
+                      className={`w-full sm:w-auto ${
+                        theme === "dark"
+                          ? "bg-gray-800"
+                          : "bg-white border-gray-600"
+                      }`}
+                      onClick={teamCreation}
+                    >
                       Create Team
                     </Button>
                   )}
