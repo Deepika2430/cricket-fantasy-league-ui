@@ -8,6 +8,9 @@ import Layout from './components/Layout';
 import Profile from './components/Profile';
 import Matches from './components/Matches';
 import Team from './components/TeamSelection';
+import Groups from './components/Groups';
+import Friends from './components/Friends';
+import Account from './components/Account';
 import Signout from './components/Signout';
 import { getUserFromToken } from './services/AuthService';
 import { AuthProvider } from './context/AuthContext';
@@ -32,6 +35,9 @@ function App() {
               <Route path="/matches" element={<Matches />} />
               <Route path="/profile" element={<Profile />} />
               <Route path="/team" element={<Team />} />
+              <Route path="/groups" element={<Groups />} />
+              <Route path="/friends" element={<Friends />} />
+              <Route path="/account" element={<Account />} />
               <Route path="/dashboard" element={<Dashboard />} />
             </Route>
             <Route path="/signout" element={<Signout />} />
