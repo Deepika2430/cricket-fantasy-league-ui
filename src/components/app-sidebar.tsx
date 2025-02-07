@@ -3,7 +3,6 @@ import {
   Handshake,
   Swords,
   Home,
-  LogOut,
   CircleUserRound,
   Settings,
   Users,
@@ -91,11 +90,6 @@ const footerItems = [
     url: "/account",
     icon: CircleUserRound,
   },
-  {
-    title: "Sign Out",
-    url: "/signout",
-    icon: LogOut,
-  },
 ];
 
 export function AppSidebar() {
@@ -162,7 +156,7 @@ export function AppSidebar() {
                     <TooltipTrigger asChild>
                       <SidebarMenuButton
                         asChild
-                        className="flex items-center w-full text-inherit no-underline text-lg"
+                        className="flex items-center w-full text-inherit no-underline text-sm"
                       >
                         <Link
                           to={item.url}
@@ -200,7 +194,7 @@ export function AppSidebar() {
             <SidebarGroup>
               <SidebarGroupLabel
                 asChild
-                className="flex items-center cursor-pointer text-lg justify-center"
+                className="flex items-center cursor-pointer text-sm justify-center"
               >
                 <CollapsibleTrigger className="flex items-center w-full justify-center">
                   Help
@@ -227,7 +221,7 @@ export function AppSidebar() {
                           <TooltipTrigger asChild>
                             <SidebarMenuButton
                               asChild
-                              className="flex items-center w-full text-inherit no-underline text-lg"
+                              className="flex items-center w-full text-inherit no-underline text-sm"
                             >
                               <Link
                                 to={item.url}
@@ -286,7 +280,7 @@ export function AppSidebar() {
                 <TooltipTrigger asChild>
                   <SidebarMenuButton
                     asChild
-                    className="flex items-center w-full text-inherit no-underline text-lg"
+                    className="flex items-center w-full text-inherit no-underline text-sm"
                   >
                     <Link
                       to={item.url}
