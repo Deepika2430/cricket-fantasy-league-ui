@@ -1,11 +1,10 @@
 import config from '../config';
 import { jwtDecode } from 'jwt-decode';
-import { useAuth } from '../context/AuthContext';
 
-export const getUserFromToken = async (token: string) => {
-  const tokenDetails = jwtDecode(token);
-  const userId = tokenDetails?.['user_id'];
-  return userId;
+export const getUserFromToken = (token: string): string => {
+  const decodedToken: any = jwtDecode(token);
+  console.log(decodedToken);
+  return decodedToken["user_id"];
 };
 
 export const login = async (email: string, password: string) => {

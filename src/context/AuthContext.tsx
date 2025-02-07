@@ -19,14 +19,16 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     const storedToken = Cookies.get('authToken');
     if (storedToken) {
       setTokenState(storedToken);
-      setUserId(getUserFromToken(storedToken));
+      const extractedUserId = getUserFromToken(storedToken);
+      setUserId(extractedUserId);
     }
   }, []);
 
   const setToken = (token: string) => {
     Cookies.set('authToken', token, { secure: true, sameSite: 'Strict', expires: 1 });
     setTokenState(token);
-    setUserId(getUserFromToken(token));
+    const extractedUserId = getUserFromToken(token);
+    setUserId(extractedUserId);
   };
 
   const logout = () => {
