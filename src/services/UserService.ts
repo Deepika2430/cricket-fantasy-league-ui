@@ -11,7 +11,7 @@ export const getUserDetailsById = async (userId: string) => {
       'Authorization': `Bearer ${token}`,
     },
   }
-  const response = await fetch(`${config.apiBaseUrl}/users/${userId}`, requestOptions);
+  const response = await fetch(`${config.apiBaseUrl}/user/`, requestOptions);
 
   const data = await response.json();
   if (!response.ok) {
@@ -32,7 +32,7 @@ export const getUserMatches = async (userId: string) => {
     redirect: "follow"
   };
 
-  const response = await fetch(`${config.apiBaseUrl}/matches/user/${userId}`, requestOptions);
+  const response = await fetch(`${config.apiBaseUrl}/matches/user`, requestOptions);
   const data = await response.json();
   if (!response.ok) {
     throw new Error(data.message || 'Failed to fetch user matches');
