@@ -33,64 +33,65 @@ import { useTheme } from "./ui/theme-provider";
 import { useSidebar } from "./ui/sidebar";
 import { Link, useLocation } from "react-router-dom";
 
-const items = [
-  {
-    title: "Home",
-    url: "/home",
-    icon: Home,
-  },
-  {
-    title: "My Profile",
-    url: "/profile",
-    icon: CircleUserRound,
-  },
-  {
-    title: "Matches",
-    url: "/matches",
-    icon: Swords,
-  },
-  {
-    title: "Teams",
-    url: "/team",
-    icon: Handshake,
-  },
-  {
-    title: "Groups",
-    url: "/groups",
-    icon: Users,
-  },
-  {
-    title: "Friends",
-    url: "/friends",
-    icon: Users,
-  },
-  {
-    title: "Settings",
-    url: "#",
-    icon: Settings,
-  },
-];
+const sidebarItems = {
+  topItems: [
+    {
+      title: "Home",
+      url: "/home",
+      icon: Home,
+    },
+    {
+      title: "My Profile",
+      url: "/profile",
+      icon: CircleUserRound,
+    },
+    {
+      title: "Matches",
+      url: "/matches",
+      icon: Swords,
+    },
+    {
+      title: "Teams",
+      url: "/team",
+      icon: Handshake,
+    },
+    {
+      title: "Groups",
+      url: "/groups",
+      icon: Users,
+    },
+    {
+      title: "Friends",
+      url: "/friends",
+      icon: Users,
+    },
+    {
+      title: "Settings",
+      url: "#",
+      icon: Settings,
+    },
+  ],
+  helpItems: [
+    {
+      title: "Support",
+      url: "/support",
+      icon: HelpCircle,
+    },
+    {
+      title: "Feedback",
+      url: "/feedback",
+      icon: Send,
+    },
+  ],
+  footerItems: [
+    {
+      title: "Account",
+      url: "/account",
+      icon: CircleUserRound,
+    },
+  ],
+};
 
-const helpItems = [
-  {
-    title: "Support",
-    url: "/support",
-    icon: HelpCircle,
-  },
-  {
-    title: "Feedback",
-    url: "/feedback",
-    icon: Send,
-  },
-];
-
-const footerItems = [
-  {
-    title: "Account",
-    url: "/account",
-    icon: CircleUserRound,
-  },
-];
 
 export function AppSidebar() {
   const [activeItem, setActiveItem] = useState<string | null>(null);
@@ -100,7 +101,7 @@ export function AppSidebar() {
 
   useEffect(() => {
     const currentPath = location.pathname;
-    const activeMenuItem = items.find((item) => item.url === currentPath);
+    const activeMenuItem = sidebarItems.topItems.find((item) => item.url === currentPath);
     if (activeMenuItem) {
       setActiveItem(activeMenuItem.title);
     }
@@ -126,7 +127,8 @@ export function AppSidebar() {
       }`}
     >
       <SidebarHeader className="p-4"></SidebarHeader>
-      <SidebarContent className="overflow-hidden hover:overflow-y-auto">
+      <SidebarContent className={`overflow-y-hidden h-64 w-64 hover:overflow-y-scroll scrollbar-thin ${theme === "dark" ? "scrollbar-thumb-gray-700 scrollbar-track-gray-800" : "scrollbar-thumb-gray-500 scrollbar-track-gray-200"} scrollbar-thumb-rounded-md scrollbar-track-rounded-md`}
+>
         <SidebarGroup>
           <SidebarGroupLabel
             className={`left-0 text-lg font-bold p-8 mt-4 duration-700 ${
@@ -139,7 +141,7 @@ export function AppSidebar() {
           </SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
-              {items.map((item) => (
+              {sidebarItems.topItems.map((item) => (
                 <SidebarMenuItem
                   key={item.title}
                   className={`flex items-center p-2 transition-colors duration-200 ${
@@ -204,7 +206,7 @@ export function AppSidebar() {
               <CollapsibleContent>
                 <SidebarGroupContent>
                   <SidebarMenu>
-                    {helpItems.map((item) => (
+                    {sidebarItems.helpItems.map((item) => (
                       <SidebarMenuItem
                         key={item.title}
                         className={`flex items-center p-2 transition-colors duration-200 ${
@@ -263,7 +265,7 @@ export function AppSidebar() {
         }`}
       >
         <SidebarMenu>
-          {footerItems.map((item) => (
+          {sidebarItems.footerItems.map((item) => (
             <SidebarMenuItem
               key={item.title}
               className={`flex items-center p-2 transition-colors duration-200 ${

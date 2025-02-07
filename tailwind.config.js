@@ -4,7 +4,7 @@ export default {
   theme: {
     extend: {},
   },
-  plugins: [],
+  plugins: [require("tailwind-scrollbar")],
   // ...
   sidebar: {
     DEFAULT: 'hsl(var(--sidebar-background))',
