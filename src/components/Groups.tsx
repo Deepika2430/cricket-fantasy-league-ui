@@ -68,6 +68,11 @@ export default function GroupsComponent() {
     setGroupDescription('');
   };
 
+  // Filter groups based on search query
+  const filteredGroups = groups.filter(group =>
+    group.name.toLowerCase().includes(searchQuery.toLowerCase())
+  );
+
   return (
     <div className={`p-6 shadow-lg transition-colors w-full h-full ${theme === "dark" ? "bg-gray-900 text-white" : "bg-white text-gray-900"}`}>
       <div className="flex justify-between items-center mb-6">
@@ -150,7 +155,7 @@ export default function GroupsComponent() {
         </div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          {groups.map(group => (
+          {filteredGroups.map(group => (
             <div key={group.id} className={`p-4 rounded-lg transition-colors ${theme === "dark" ? "bg-gray-800 hover:bg-gray-600" : "hover:bg-gray-100"}`}>
               <div className="flex items-start space-x-3">
                 <img
