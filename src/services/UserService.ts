@@ -4,7 +4,7 @@ import config from '../config';
 
 export const getUserDetailsById = async (userId: string) => {
   const token = Cookies.get('authToken');
-  const requestOptions: RequestInit= {
+  const requestOptions: RequestInit = {
     method: 'GET',
     headers: {
       'Content-Type': 'application/json',
@@ -41,3 +41,61 @@ export const getUserMatches = async (userId: string) => {
   return data;
 };
 
+
+export const getUserDetails = async () => {
+  const token = Cookies.get('authToken');
+  const myHeaders = new Headers();
+  myHeaders.append("Authorization", `Bearer ${token}`);
+
+  const requestOptions: RequestInit = {
+    method: "GET",
+    headers: myHeaders,
+    redirect: "follow"
+  };
+
+  try {
+    const response = await fetch(`${config.apiBaseUrl}/user`, requestOptions);
+    const result = await response.json();
+
+    // Map the API response to the UserData structure
+    return {
+      username: result.data.Username,
+      email: result.data.Email,
+      profileImage: result.data.ProfilePictureURL
+    };
+  } catch (error) {
+    console.error(error);
+    return error;
+  }
+};
+
+export const updateUserDetails = async (updatedData: any) => {
+  try {
+    console.log("Updating user details with:", updatedData);
+    const token = Cookies.get('authToken');
+    const myHeaders = new Headers();
+    myHeaders.append("Authorization", `Bearer ${token}`);
+    myHeaders.append("Content-Type", "application/json");
+
+    const requestOptions: RequestInit = {
+      method: "PUT",
+      headers: myHeaders,
+      body: JSON.stringify(updatedData),
+    };
+
+    const response = await fetch(`${config.apiBaseUrl}/users`, requestOptions);
+
+    if (!response.ok) {
+      const errorData = await response.json();
+      console.error("Failed to update user details:", errorData);
+      throw new Error(errorData.message || "Failed to update user details");
+    }
+
+    const result = await response.json();
+    console.log("User details updated successfully:", result);
+    return result;
+  } catch (error) {
+    console.error("Error updating user details:", error);
+    throw error; // Re-throw the error to be handled by the caller
+  }
+};

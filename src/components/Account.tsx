@@ -1,12 +1,20 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useTheme } from "./ui/theme-provider";
 import { Edit, Save, Camera, Link, X, Eye, EyeOff, Pencil } from "lucide-react";
+import { getUserDetails } from "../services/UserService";
+import { updateUserDetails } from "../services/UserService";
+
+interface UserData {
+  username: string;
+  email: string;
+  profileImage: string;
+}
 
 export default function Account() {
   const { theme } = useTheme();
   const [isEditing, setIsEditing] = useState(false);
   const [showUrlInput, setShowUrlInput] = useState(false);
-  const [profileImage, setProfileImage] = useState("https://via.placeholder.com/100");
+  const [profileImage, setProfileImage] = useState("");
   const [imageUrl, setImageUrl] = useState("");
   const [oldPassword, setOldPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
@@ -15,18 +23,35 @@ export default function Account() {
   const [showNewPassword, setShowNewPassword] = useState(false);
   const [dummyPassword, setDummyPassword] = useState("**********"); // Dummy password for display
 
-  const initialUserData = {
-    username: "John Doe",
-    email: "johndoe@example.com",
-    phone: "+1234567890",
-    address: "123 Main Street, City, Country",
-  };
+  const [userData, setUserData] = useState<UserData>({
+    username: "",
+    email: "",
+    profileImage: "",
+  });
+  const [tempData, setTempData] = useState<UserData>({
+    username: "",
+    email: "",
+    profileImage: "",
+  }); // Temp storage for canceling edits
 
-  const [userData, setUserData] = useState(initialUserData);
-  const [tempData, setTempData] = useState(initialUserData); // Temp storage for canceling edits
+  useEffect(() => {
+    const fetchUserDetails = async () => {
+      try {
+        const response: UserData = await getUserDetails(); // Fetch user details
+        console.log(response);
+        setUserData(response); // Set user data from API response
+        setTempData(response); // Set tempData to the fetched user data
+        setProfileImage(response.profileImage);
+      } catch (error) {
+        console.error("Failed to fetch user details:", error);
+      }
+    };
+
+    fetchUserDetails(); // Call the async function
+  }, []); // Empty dependency array to run only on mount
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    setTempData({ ...tempData, [e.target.name]: e.target.value });
+    setTempData({ ...tempData, [e.target.name]: e.target.value } as UserData);
   };
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -41,10 +66,21 @@ export default function Account() {
     setImageUrl(e.target.value);
   };
 
-  const applyImageUrl = () => {
+  const applyImageUrl = async () => {
     if (imageUrl.trim() !== "") {
-      setProfileImage(imageUrl);
-      setShowUrlInput(false);
+      try {
+        // Validate the URL (basic validation)
+        new URL(imageUrl); // This will throw an error if the URL is invalid
+        setProfileImage(imageUrl); // Set the profile image to the provided URL
+        setShowUrlInput(false); // Hide the URL input
+
+        // Call updateUserDetails to update the profile image
+        await updateUserDetails({profile_picture_url: imageUrl}); // Pass the updated data and the new image URL
+        alert("Profile image updated successfully!"); // Show success alert
+      } catch (error) {
+        console.error("Invalid URL provided:", error);
+        alert("Please provide a valid URL for the profile image."); // Show error alert
+      }
     }
   };
 
@@ -53,9 +89,16 @@ export default function Account() {
     setTempData(userData); // Backup current data
   };
 
-  const handleSave = () => {
-    setIsEditing(false);
-    setUserData(tempData); // Save changes
+  const handleSave = async () => {
+    try {
+      await updateUserDetails(tempData); // Call the imported update function
+      setIsEditing(false);
+      setUserData(tempData); // Save changes
+      alert("User details updated successfully!"); // Show success alert
+    } catch (error) {
+      console.error("Failed to update user details:", error);
+      alert("Error updating user details: " + error.message); // Show error alert
+    }
   };
 
   const handleCancel = () => {
@@ -63,14 +106,20 @@ export default function Account() {
     setTempData(userData); // Restore previous data
   };
 
-  const handleChangePassword = () => {
+  const handleChangePassword = async () => {
     // Logic to handle password change
     console.log("Old Password:", oldPassword);
     console.log("New Password:", newPassword);
-    // Reset fields after updating
-    setOldPassword("");
-    setNewPassword("");
-    setIsChangePasswordDialogOpen(false); // Close dialog after updating
+    try {
+      await updateUserDetails({oldPassword, newPassword}); // Call the imported update function
+      alert("User password updated successfully!"); // Show success alert
+      setOldPassword("");
+      setNewPassword("");
+      setIsChangePasswordDialogOpen(false); // Close dialog after updating
+    } catch (error) {
+      console.error("Failed to update user password:", error);
+      alert("Error updating user details: " + error.message); // Show error alert
+    }
   };
 
   return (
@@ -141,6 +190,12 @@ export default function Account() {
                 disabled={!isEditing}
                 className={`w-full p-2 border rounded-lg transition-colors ${theme === "dark" ? "bg-gray-700 text-white border-gray-600" : "bg-white text-gray-900"} focus:ring-2 focus:ring-blue-500`}
               />
+              {/* Display original user details when not editing */}
+              {isEditing && (
+                <p className={`mt-1 text-sm ${theme === "dark" ? "text-gray-300" : "text-gray-600"}`}>
+                  {field === "username" ? userData.username : userData.email}
+                </p>
+              )}
             </div>
           ))}
         </div>
