@@ -51,11 +51,6 @@ const sidebarItems = {
       icon: Swords,
     },
     {
-      title: "Teams",
-      url: "/team",
-      icon: Handshake,
-    },
-    {
       title: "Groups",
       url: "/groups",
       icon: Users,
