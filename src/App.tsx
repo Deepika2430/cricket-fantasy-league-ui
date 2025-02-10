@@ -2,7 +2,6 @@ import { useState, useEffect } from 'react';
 import Cookies from 'js-cookie';
 import { Route, Routes, Navigate, BrowserRouter as Router } from 'react-router-dom';
 import Dashboard from './components/Dashboard';
-import Login from './components/Login';
 import Home from './components/Home';
 import Layout from './components/Layout';
 import Profile from './components/Profile';
@@ -14,7 +13,10 @@ import Account from './components/Account';
 import Signout from './components/Signout';
 import { getUserFromToken } from './services/AuthService';
 import { AuthProvider } from './context/AuthContext';
-import NotFound from './components/NotFound';
+import MainLayout from './components/MainLayout';
+import Login from './components/TestLogin';
+import CricketLiveScore from './components/CricketLiveScore';
+
 
 function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -23,6 +25,7 @@ function App() {
   useEffect(() => {
     if (isAuthenticated)
       setUserId(getUserFromToken(Cookies.get('authToken')));
+    console.log(Cookies.get('authToken'))
     if (userId)
       setIsAuthenticated(true);
   });
@@ -30,7 +33,9 @@ function App() {
   return (
     <AuthProvider>
         <Routes>
-          <Route path="/login" element={<Login setIsAuthenticated={setIsAuthenticated}/>} />
+          <Route path="/" element={<MainLayout />} />
+          <Route path="/livescore" element={<CricketLiveScore />} />
+          <Route path="/login" element={<Login />} />
           <Route element={<Layout />}>
               <Route path="/home" element={<Home />} />
               <Route path="/matches" element={<Matches />} />
