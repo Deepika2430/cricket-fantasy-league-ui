@@ -63,17 +63,23 @@ export function Header() {
             <User className="w-6 h-6" />
           </button>
           {showProfileMenu && (
-            <div className={`absolute right-0 w-48 bg-white rounded-lg shadow-lg ${theme === "dark" ? "bg-gray-800 text-white" : "bg-white text-black"}`}
-                 onMouseEnter={() => setShowProfileMenu(true)}
-                 onMouseLeave={() => setShowProfileMenu(false)}
+            <div
+            className={`absolute right-5 w-auto p-2  border-white rounded-lg shadow-lg 
+                        inline-flex items-center whitespace-nowrap 
+                        ${theme === "dark" ? "text-white bg-gray-900" : "bg-white text-black"}`}
+            onMouseEnter={() => setShowProfileMenu(true)}
+            onMouseLeave={() => setShowProfileMenu(false)}
+          >
+            <button
+              onClick={confirmSignOut}
+              className={`text-sm pr-4 py-2 p-2 
+                          ${theme === "dark" ? "hover:bg-gray-1000 bg-gray-900" : "hover:bg-gray-200 hover:px-3"}`}
             >
-              <button
-                onClick={confirmSignOut}
-                className={`block w-full px-4 py-2 hover:bg-gray-200 ${theme === "dark" ? "hover:bg-gray-800 bg-gray-900" : ""}`}
-              >
-                Sign Out
-              </button>
-            </div>
+              Sign Out
+            </button>
+          </div>
+          
+          
           )}
         </div>
       </div>
