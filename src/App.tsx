@@ -14,6 +14,7 @@ import Account from './components/Account';
 import Signout from './components/Signout';
 import { getUserFromToken } from './services/AuthService';
 import { AuthProvider } from './context/AuthContext';
+import NotFound from './components/NotFound';
 
 function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -41,7 +42,7 @@ function App() {
               <Route path="/dashboard" element={<Dashboard />} />
             </Route>
             <Route path="/signout" element={<Signout />} />
-          <Route path="*" element={<Navigate to={isAuthenticated ? "/dashboard" : "/login"} />} />
+          <Route path="*" element={<NotFound />} />
         </Routes>
     </AuthProvider>
   );
