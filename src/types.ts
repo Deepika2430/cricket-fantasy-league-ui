@@ -14,6 +14,41 @@ export interface Player {
   };
 }
 
+export interface BallData {
+  ball_number: number;
+  batsman: string;
+  batting_team: string;
+  bowler: string;
+  bowling_team: string;
+  comment: string;
+  event: string;
+  over_number: number;
+  runs: number;
+}
+
+export interface ScoreData {
+  ball_data: BallData;
+  ball_number: number;
+  score: number;
+  wickets: number;
+}
+
+export interface PlayerStats {
+  name: string;
+  runs: number;
+  balls: number;
+  fours: number;
+  sixes: number;
+  wickets: number;
+  overs: number;
+  maidens: number;
+  catches: number;
+  runouts: number;
+  stumpings: number;
+  economyRate: number;
+  strikeRate: number;
+}
+
 export interface UserTeam {
   id: string;
   name: string;
