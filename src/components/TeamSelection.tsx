@@ -4,9 +4,11 @@ import { getTeamPlayers } from "../services/matches";
 import { Loader2, Crown, Shield, X, Check, Coins } from "lucide-react";
 import { useTheme } from "./ui/theme-provider";
 import type { Player } from "../types/match";
-import { getUserDetailsById } from "../services/userService";
+import { getUserDetailsById, createTeam } from "../services/userService";
 import Cookies from "js-cookie";
-// import cricketGroundImg from '../data/pixelcut-export.png'
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+// import cricketGroundImg from "../data/background.jpg";
 
 async function getValidImage(url: string, playerLogo: string): Promise<string> {
   return new Promise((resolve) => {
@@ -63,7 +65,11 @@ const PlayerButton = ({ player, isSelected, onClick, theme }) => {
         }`}
     >
       <div className="flex items-center space-x-3">
-        <img src={player.Avatar} alt={player.Name} className="w-10 h-10 rounded-full object-cover" />
+        <img
+          src={player.Avatar}
+          alt={player.Name}
+          className="w-10 h-10 rounded-full object-cover"
+        />
         <span className="font-medium">{player.Name}</span>
         <span
           className={`px-2 py-1 text-sm font-medium rounded-full flex items-center gap-1 ${theme === "dark"
@@ -84,7 +90,7 @@ const PlayerButton = ({ player, isSelected, onClick, theme }) => {
                     ? "bg-yellow-200 text-yellow-800"
                     : player.Role === "Allrounder"
                       ? "bg-red-200 text-red-800"
-                    : "bg-gray-200 text-gray-800"
+                      : "bg-gray-200 text-gray-800"
             }`}
         >
           {player.Role}
@@ -99,7 +105,14 @@ const PlayerButton = ({ player, isSelected, onClick, theme }) => {
           {player?.Cost || 100}
         </span>
       </div>
-      {isSelected ? <Check className="w-5 h-5 text-green-500" /> : <div className={`w-5 h-5 rounded-full border-2 ${theme === "dark" ? "border-gray-600" : "border-gray-300"}`} />}
+      {isSelected ? (
+        <Check className="w-5 h-5 text-green-500" />
+      ) : (
+        <div
+          className={`w-5 h-5 rounded-full border-2 ${theme === "dark" ? "border-gray-600" : "border-gray-300"
+            }`}
+        />
+      )}
     </button>
   );
 };
@@ -180,7 +193,9 @@ const TeamSelection = () => {
       return total + (player.Cost || 100);
     }, 0);
     setUserTotalAmount(userDetails?.TotalPoints - totalCost);
-    console.log(`Total cost of selected players: ${totalCost}, User Total Amount: ${userTotalAmount}`);
+    console.log(
+      `Total cost of selected players: ${totalCost}, User Total Amount: ${userTotalAmount}`
+    );
   };
 
   const handlePlayerSelect = (player: Player) => {
@@ -210,7 +225,9 @@ const TeamSelection = () => {
 
     // Update user total amount
     setUserTotalAmount(newTotalAmount); // Update the total amount immediately
-    console.log(`Player ${player.Name} added. Total players: ${updatedSelectedPlayers.length}`);
+    console.log(
+      `Player ${player.Name} added. Total players: ${updatedSelectedPlayers.length}`
+    );
   };
 
   const handleGroundPlayerClick = (player: SelectedPlayer) => {
@@ -235,7 +252,9 @@ const TeamSelection = () => {
       );
       // Update user total amount when a player is removed
       setUserTotalAmount((prevAmount) => prevAmount + playerCost); // Increase user coins
-      console.log(`Player ${selectedPlayerForRole.Name} removed. Total players: ${updatedPlayers.length}`);
+      console.log(
+        `Player ${selectedPlayerForRole.Name} removed. Total players: ${updatedPlayers.length}`
+      );
     } else if (role === "removeRole") {
       updatedPlayers[playerIndex] = {
         ...updatedPlayers[playerIndex],
@@ -277,9 +296,37 @@ const TeamSelection = () => {
     selectedPlayers.some((p) => p.isCaptain) &&
     selectedPlayers.some((p) => p.isViceCaptain);
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     if (!canSubmit) return;
-    console.log("Team submitted:", selectedPlayers);
+    // Call the API to submit the team selected players having data of selected players
+    try {
+      const formattedPlayers = selectedPlayers.map(player => ({
+        player_id: player.PlayerID,
+        is_captain: player.isCaptain,
+        is_vice_captain: player.isViceCaptain,
+        // Add any other keys you want to include here
+    }));
+      const response = await createTeam({
+        match_id: match.match_id,
+        user_team_name: `${match.team1.team_name}-${match.team2.team_name}`,
+        user_team_players: formattedPlayers,
+      });
+      console.log("Team created successfully:", response);
+      if (response.success) {
+        // alert("Team created successfully!");
+        toast.success('Team created successfully!', {
+          onClose: () => navigate("/matches"), // Navigate after toast disappears
+          autoClose: 2000, // Wait for 2 seconds before closing
+        });
+        
+      } else {
+        // alert(`Failed to create ${response.error}`);
+        toast.error(`Failed to create team: ${response.error}`);
+      }
+    } catch (error) {
+      console.log("Error in team creation: ", error);
+    }
+    // console.log("Team submitted:", selectedPlayers);
   };
 
   if (loading || loadingUserDetails) {
@@ -296,7 +343,10 @@ const TeamSelection = () => {
         }`}
     >
       {/* Fixed container for profile picture and user amount */}
-      <div className={`fixed top-16 right-0 left-[16rem] w-[calc(100%-16rem)] z-30 ${theme === "dark" ? "bg-gray-900" : "bg-white"} p-2 shadow-md flex items-center justify-between`}>
+      <div
+        className={`fixed top-16 right-0 left-[16rem] w-[calc(100%-16rem)] z-30 ${theme === "dark" ? "bg-gray-900" : "bg-white"
+          } p-2 shadow-md flex items-center justify-between`}
+      >
         {/* Profile Picture */}
         <img
           src={userDetails.ProfilePictureURL || playerLogo}
@@ -307,10 +357,15 @@ const TeamSelection = () => {
         {/* Coins */}
         <div className="flex items-center text-lg font-bold p-4">
           <Coins className="w-6 h-6 text-yellow-500 mr-2" />
-          <span className={`text-black ${theme === "dark" ? "text-white" : "text-black"}`}>{userTotalAmount}</span>
+          <span
+            className={`text-black ${theme === "dark" ? "text-white" : "text-black"
+              }`}
+          >
+            {userTotalAmount}
+          </span>
         </div>
       </div>
-
+      <ToastContainer />
       {/* Main content area */}
       <div className="max-w-7xl mx-auto mt-20">
         {/* Header with close button */}
@@ -318,81 +373,95 @@ const TeamSelection = () => {
           <h1 className="text-3xl font-bold">Create Your Dream Team</h1>
           <button
             onClick={handleExit}
-            className={`p-2 rounded-full transition-colors ${theme === "dark" ? "hover:bg-gray-800" : "hover:bg-gray-100"}`}
+            className={`p-2 rounded-full transition-colors ${theme === "dark" ? "hover:bg-gray-800" : "hover:bg-gray-100"
+              }`}
           >
             <X className="w-6 h-6" />
           </button>
         </div>
         {/* Cricket Ground */}
         <div className="mb-8">
-          {!groundImageError ? (
-            <div
-              className="rounded-xl shadow-lg p-8 aspect-[2/1] relative bg-cover bg-center"
-              style={{
-                backgroundImage: `url(${GROUND_IMAGES[theme === "dark" ? "dark" : "light"]})`,
-              }}
-              onError={() => setGroundImageError(true)}
-            >
-              {/* Overlay for better visibility */}
-              <div className="absolute inset-0 bg-black bg-opacity-20 rounded-xl"></div>
+          <div
+            className={`rounded-xl shadow-lg p-8 aspect-[2/1] relative bg-cover bg-center ${groundImageError
+                ? theme === "dark"
+                  ? "bg-gray-700"
+                  : "bg-gray-200"
+                : ""
+              }`}
+            style={{
+              backgroundImage: !groundImageError
+                ? `url(${GROUND_IMAGES[theme === "dark" ? "dark" : "light"]})`
+                : `url(${GROUND_IMAGES[theme === "dark" ? "dark" : "light"]})`,
+            }}
+            onError={() => {
+              setGroundImageError(true); // Set error state if image fails to load
+              setLoading(false); // Reset loading state
+            }}
+          >
+            {/* Overlay for better visibility */}
+            <div className="absolute inset-0 bg-black bg-opacity-20 rounded-xl"></div>
 
-              {/* Render selected players */}
-              <div className="relative h-full">
-                {selectedPlayers.map((player, index) => (
-                  <div
-                    key={player.PlayerID}
-                    className="absolute w-16 h-16 transform -translate-x-1/2 -translate-y-1/2 transition-all duration-300"
-                    style={{
-                      left: PLAYER_POSITIONS[index]?.left || "50%",
-                      top: PLAYER_POSITIONS[index]?.top || "50%",
-                    }}
-                    onMouseEnter={() => setHoveredPlayer(player)}
-                    onMouseLeave={() => setHoveredPlayer(null)}
+            {/* Render selected players */}
+            <div className="relative h-full">
+              {selectedPlayers.map((player, index) => (
+                <div
+                  key={player.PlayerID}
+                  className="absolute w-16 h-16 transform -translate-x-1/2 -translate-y-1/2 transition-all duration-300"
+                  style={{
+                    left: PLAYER_POSITIONS[index]?.left || "50%",
+                    top: PLAYER_POSITIONS[index]?.top || "50%",
+                  }}
+                  onMouseEnter={() => setHoveredPlayer(player)}
+                  onMouseLeave={() => setHoveredPlayer(null)}
+                >
+                  <button
+                    onClick={() => handleGroundPlayerClick(player)}
+                    className="relative w-full h-full group"
                   >
-                    <button
-                      onClick={() => handleGroundPlayerClick(player)}
-                      className="relative w-full h-full group"
-                    >
-                      <img
-                        src={player.Avatar}
-                        alt={player.Name}
-                        className="w-16 h-16 rounded-full border-4 border-white object-cover shadow-lg group-hover:border-blue-400 transition-colors"
-                      />
-                      {player.isCaptain && (
-                        <Crown className="absolute -top-2 -right-2 w-6 h-6 text-yellow-400 drop-shadow-lg" />
-                      )}
-                      {player.isViceCaptain && (
-                        <Shield className="absolute -top-2 -right-2 w-6 h-6 text-blue-400 drop-shadow-lg" />
-                      )}
-                      {hoveredPlayer === player && (
-                        <div className="absolute -bottom-8 left-1/2 transform -translate-x-1/2 bg-black bg-opacity-75 text-white px-2 py-1 rounded text-sm whitespace-nowrap z-10">
-                          {player.Name}
-                        </div>
-                      )}
-                      {/* Display player cost at the bottom of the card */}
-                      <div className="absolute bottom-0 left-1/2 transform -translate-x-1/2 flex items-center bg-white text-black text-xs font-semibold rounded px-1">
-                        <Coins className="w-4 h-4 text-yellow-500 mr-1" /> {/* Yellow coins */}
-                        <span>{player.Cost || 100}</span> {/* Display player cost */}
+                    <img
+                      src={player.Avatar}
+                      alt={player.Name}
+                      className="w-16 h-16 rounded-full border-4 border-white object-cover shadow-lg group-hover:border-blue-400 transition-colors"
+                    />
+                    {player.isCaptain && (
+                      <Crown className="absolute -top-2 -right-2 w-6 h-6 text-yellow-400 drop-shadow-lg" />
+                    )}
+                    {player.isViceCaptain && (
+                      <Shield className="absolute -top-2 -right-2 w-6 h-6 text-blue-400 drop-shadow-lg" />
+                    )}
+                    {hoveredPlayer === player && (
+                      <div className="absolute -bottom-8 left-1/2 transform -translate-x-1/2 bg-black bg-opacity-75 text-white px-2 py-1 rounded text-sm whitespace-nowrap z-10">
+                        {player.Name}
                       </div>
-                    </button>
-                  </div>
-                ))}
-              </div>
+                    )}
+                    {/* Display player cost at the bottom of the card */}
+                    <div className="absolute bottom-0 left-1/2 transform -translate-x-1/2 flex items-center bg-white text-black text-xs font-semibold rounded px-1">
+                      <Coins className="w-4 h-4 text-yellow-500 mr-1" />{" "}
+                      {/* Yellow coins */}
+                      <span>{player.Cost || 100}</span>{" "}
+                      {/* Display player cost */}
+                    </div>
+                  </button>
+                </div>
+              ))}
             </div>
-          ) : (
-            <div className="h-96 flex items-center justify-center">
-              <Loader2 className="w-8 h-8 animate-spin text-blue-600" />
-            </div>
-          )}
+          </div>
         </div>
         {/* Teams */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
           {/* Team 1 Players */}
-          <div className={`rounded-xl shadow-lg p-6 ${theme === "dark" ? "bg-gray-800" : "bg-white"}`}>
-            <h2 className="text-xl font-semibold mb-4">{match.team1.team_name}</h2>
+          <div
+            className={`rounded-xl shadow-lg p-6 ${theme === "dark" ? "bg-gray-800" : "bg-white"
+              }`}
+          >
+            <h2 className="text-xl font-semibold mb-4">
+              {match.team1.team_name}
+            </h2>
             <div className="space-y-2">
               {team1Players.map((player) => {
-                const isSelected = selectedPlayers.some((p) => p.PlayerID === player.PlayerID);
+                const isSelected = selectedPlayers.some(
+                  (p) => p.PlayerID === player.PlayerID
+                );
                 return (
                   <PlayerButton
                     key={player.PlayerID}
@@ -407,11 +476,18 @@ const TeamSelection = () => {
           </div>
 
           {/* Team 2 Players */}
-          <div className={`rounded-xl shadow-lg p-6 ${theme === "dark" ? "bg-gray-800" : "bg-white"}`}>
-            <h2 className="text-xl font-semibold mb-4">{match.team2.team_name}</h2>
+          <div
+            className={`rounded-xl shadow-lg p-6 ${theme === "dark" ? "bg-gray-800" : "bg-white"
+              }`}
+          >
+            <h2 className="text-xl font-semibold mb-4">
+              {match.team2.team_name}
+            </h2>
             <div className="space-y-2">
               {team2Players.map((player) => {
-                const isSelected = selectedPlayers.some((p) => p.PlayerID === player.PlayerID);
+                const isSelected = selectedPlayers.some(
+                  (p) => p.PlayerID === player.PlayerID
+                );
                 return (
                   <PlayerButton
                     key={player.PlayerID}
@@ -432,12 +508,12 @@ const TeamSelection = () => {
             onClick={handleSubmit}
             disabled={!canSubmit}
             className={`px-6 py-2 rounded-lg font-semibold transition-colors ${canSubmit
-              ? theme === "dark"
-                ? "bg-blue-600 text-white hover:bg-blue-700"
-                : "bg-blue-600 text-white hover:bg-blue-700"
-              : theme === "dark"
-                ? "bg-gray-700 text-gray-400 cursor-not-allowed"
-                : "bg-gray-300 text-gray-500 cursor-not-allowed"
+                ? theme === "dark"
+                  ? "bg-blue-600 text-white hover:bg-blue-700"
+                  : "bg-blue-600 text-white hover:bg-blue-700"
+                : theme === "dark"
+                  ? "bg-gray-700 text-gray-400 cursor-not-allowed"
+                  : "bg-gray-300 text-gray-500 cursor-not-allowed"
               }`}
           >
             Submit Team
@@ -448,10 +524,16 @@ const TeamSelection = () => {
       {/* Role Selection Dialog */}
       {showRoleDialog && selectedPlayerForRole && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-          <div className={`rounded-lg max-w-md w-full p-6 ${theme === "dark" ? "bg-gray-800" : "bg-white"}`}>
+          <div
+            className={`rounded-lg max-w-md w-full p-6 ${theme === "dark" ? "bg-gray-800" : "bg-white"
+              }`}
+          >
             <div className="flex justify-between items-center mb-4">
               <h3 className="text-xl font-semibold">Player Actions</h3>
-              <button onClick={() => setShowRoleDialog(false)} className="text-gray-500 hover:text-gray-700">
+              <button
+                onClick={() => setShowRoleDialog(false)}
+                className="text-gray-500 hover:text-gray-700"
+              >
                 <X className="w-6 h-6" />
               </button>
             </div>
@@ -460,7 +542,10 @@ const TeamSelection = () => {
               {!selectedPlayerForRole.isCaptain && (
                 <button
                   onClick={() => handleRoleSelection("captain")}
-                  className={`w-full p-3 rounded-lg flex items-center space-x-2 ${theme === "dark" ? "bg-yellow-900/50 hover:bg-yellow-900/70" : "bg-yellow-50 hover:bg-yellow-100"}`}
+                  className={`w-full p-3 rounded-lg flex items-center space-x-2 ${theme === "dark"
+                      ? "bg-yellow-900/50 hover:bg-yellow-900/70"
+                      : "bg-yellow-50 hover:bg-yellow-100"
+                    }`}
                 >
                   <Crown className="w-5 h-5 text-yellow-600" />
                   <span>Make Captain</span>
@@ -470,26 +555,36 @@ const TeamSelection = () => {
               {!selectedPlayerForRole.isViceCaptain && (
                 <button
                   onClick={() => handleRoleSelection("viceCaptain")}
-                  className={`w-full p-3 rounded-lg flex items-center space-x-2 ${theme === "dark" ? "bg-blue-900/50 hover:bg-blue-900/70" : "bg-blue-50 hover:bg-blue-100"}`}
+                  className={`w-full p-3 rounded-lg flex items-center space-x-2 ${theme === "dark"
+                      ? "bg-blue-900/50 hover:bg-blue-900/70"
+                      : "bg-blue-50 hover:bg-blue-100"
+                    }`}
                 >
                   <Shield className="w-5 h-5 text-blue-600" />
                   <span>Make Vice Captain</span>
                 </button>
               )}
 
-              {(selectedPlayerForRole.isCaptain || selectedPlayerForRole.isViceCaptain) && (
-                <button
-                  onClick={() => handleRoleSelection("removeRole")}
-                  className={`w-full p-3 rounded-lg flex items-center space-x-2 ${theme === "dark" ? "bg-orange-900/50 hover:bg-orange-900/70" : "bg-orange-50 hover:bg-orange-100"}`}
-                >
-                  <X className="w-5 h-5 text-orange-600" />
-                  <span>Remove Role</span>
-                </button>
-              )}
+              {(selectedPlayerForRole.isCaptain ||
+                selectedPlayerForRole.isViceCaptain) && (
+                  <button
+                    onClick={() => handleRoleSelection("removeRole")}
+                    className={`w-full p-3 rounded-lg flex items-center space-x-2 ${theme === "dark"
+                        ? "bg-orange-900/50 hover:bg-orange-900/70"
+                        : "bg-orange-50 hover:bg-orange-100"
+                      }`}
+                  >
+                    <X className="w-5 h-5 text-orange-600" />
+                    <span>Remove Role</span>
+                  </button>
+                )}
 
               <button
                 onClick={() => handleRoleSelection("remove")}
-                className={`w-full p-3 rounded-lg flex items-center space-x-2 ${theme === "dark" ? "bg-red-900/50 hover:bg-red-900/70" : "bg-red-50 hover:bg-red-100"}`}
+                className={`w-full p-3 rounded-lg flex items-center space-x-2 ${theme === "dark"
+                    ? "bg-red-900/50 hover:bg-red-900/70"
+                    : "bg-red-50 hover:bg-red-100"
+                  }`}
               >
                 <X className="w-5 h-5 text-red-600" />
                 <span>Remove Player</span>
@@ -502,16 +597,32 @@ const TeamSelection = () => {
       {/* Exit Confirmation Dialog */}
       {showExitConfirmation && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-          <div className={`rounded-lg max-w-md w-full p-6 ${theme === "dark" ? "bg-gray-800" : "bg-white"}`}>
+          <div
+            className={`rounded-lg max-w-md w-full p-6 ${theme === "dark" ? "bg-gray-800" : "bg-white"
+              }`}
+          >
             <h3 className="text-xl font-semibold mb-4">Confirm Exit</h3>
-            <p className={theme === "dark" ? "text-gray-300 mb-6" : "text-gray-600 mb-6"}>
+            <p
+              className={
+                theme === "dark" ? "text-gray-300 mb-6" : "text-gray-600 mb-6"
+              }
+            >
               Are you sure you want to exit? Your team selection will be lost.
             </p>
             <div className="flex justify-end space-x-4">
-              <button onClick={() => setShowExitConfirmation(false)} className={`px-4 py-2 rounded-lg ${theme === "dark" ? "text-gray-300 hover:bg-gray-700" : "text-gray-600 hover:bg-gray-100"}`}>
+              <button
+                onClick={() => setShowExitConfirmation(false)}
+                className={`px-4 py-2 rounded-lg ${theme === "dark"
+                    ? "text-gray-300 hover:bg-gray-700"
+                    : "text-gray-600 hover:bg-gray-100"
+                  }`}
+              >
                 Cancel
               </button>
-              <button onClick={confirmExit} className="px-4 py-2 rounded-lg bg-red-500 text-white hover:bg-red-600">
+              <button
+                onClick={confirmExit}
+                className="px-4 py-2 rounded-lg bg-red-500 text-white hover:bg-red-600"
+              >
                 Exit
               </button>
             </div>

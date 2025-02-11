@@ -1,5 +1,6 @@
 import Cookies from 'js-cookie';
 import config from '../config';
+import { getUserFromToken } from './AuthService';
 
 
 export const getUserDetailsById = async (userId: string) => {
@@ -99,3 +100,28 @@ export const updateUserDetails = async (updatedData: any) => {
     throw error; // Re-throw the error to be handled by the caller
   }
 };
+
+export const createTeam = async (teamData: any) => {
+  const token = Cookies.get('authToken');
+  const userId = await getUserFromToken(token);
+  const myHeaders = new Headers();
+  myHeaders.append("Authorization", `Bearer ${token}`);
+  myHeaders.append("Content-Type", "application/json");
+
+  console.log("Test", {user_id: userId, ...teamData})
+  const requestOptions: RequestInit = {
+    method: "POST",
+    headers: myHeaders,
+    body: JSON.stringify({user_id: userId, ...teamData}),
+  };
+  console.log("In service:", teamData);
+  // return {status: true}
+  try {
+    const response = await fetch(`${config.apiBaseUrl}/userteams`, requestOptions);
+    return (await response.json());
+  } catch (error) {
+    console.log(error);
+    return { status: false, error };
+  }
+
+}
