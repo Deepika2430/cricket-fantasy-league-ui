@@ -26,7 +26,6 @@ function App() {
   useEffect(() => {
     if (isAuthenticated)
       setUserId(getUserFromToken(Cookies.get('authToken')));
-    console.log(Cookies.get('authToken'))
     if (userId)
       setIsAuthenticated(true);
   });
