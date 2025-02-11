@@ -2,7 +2,8 @@ import { useState, useEffect, useCallback, useRef } from 'react';
 import { Trophy, Clock, Award, TrendingUp } from 'lucide-react';
 import { ScoreData, PlayerStats } from '../types';
 import { calculateBattingPoints, calculateBowlingPoints, calculateFieldingPoints } from '../utils/pointsCalculator';
-import {getLiveScore} from '../services/LiveScore';
+import { getLiveScore } from '../services/LiveScore';
+import { useTheme } from './ui/theme-provider';
 
 // Mock data for testing
 const mockApiResponse: ScoreData = {
@@ -23,6 +24,7 @@ const mockApiResponse: ScoreData = {
 };
 
 const LiveScore = () => {
+  const { theme } = useTheme();
   const [scoreData, setScoreData] = useState<ScoreData | null>(null);
   const [totalPoints, setTotalPoints] = useState(0);
   const [lastPoints, setLastPoints] = useState(0);
@@ -107,7 +109,7 @@ const LiveScore = () => {
 
   if (error) {
     return (
-      <div className="min-h-screen bg-gradient-to-r from-[#1A1F2C] to-[#2D3748] text-white flex items-center justify-center">
+      <div className={`min-h-screen ${theme === 'dark' ? 'bg-gradient-to-r from-[#1A1F2C] to-[#2D3748] text-white' : 'bg-gradient-to-r from-[#F3F4F6] to-[#E5E7EB] text-black'} flex items-center justify-center`}>
         <div className="bg-red-500/20 p-4 rounded-lg text-red-300">
           {error}
         </div>
@@ -117,17 +119,17 @@ const LiveScore = () => {
 
   if (!scoreData) {
     return (
-      <div className="min-h-screen bg-gradient-to-r from-[#1A1F2C] to-[#2D3748] text-white flex items-center justify-center">
+      <div className={`min-h-screen ${theme === 'dark' ? 'bg-gradient-to-r from-[#1A1F2C] to-[#2D3748] text-white' : 'bg-gradient-to-r from-[#F3F4F6] to-[#E5E7EB] text-black'} flex items-center justify-center`}>
         <div className="animate-pulse text-xl">Loading match data...</div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-r from-[#1A1F2C] to-[#2D3748] text-white py-8">
+    <div className={`w-full ${theme === 'dark' ? 'bg-gradient-to-r from-[#1A1F2C] to-[#2D3748] text-white' : 'bg-gradient-to-r from-[#F3F4F6] to-[#E5E7EB] text-black'} py-8`}>
       {/* Points Display */}
       <div className="container mx-auto px-4 mb-6">
-        <div className="bg-black/30 rounded-xl p-6 backdrop-blur-sm mb-6">
+        <div className={`${theme === 'dark' ? 'bg-black/30' : 'bg-white/30'} rounded-xl p-6 backdrop-blur-sm mb-6`}>
           <div className="grid grid-cols-3 gap-4">
             <div className="text-center">
               <div className="flex items-center justify-center space-x-2 mb-2">
@@ -143,18 +145,11 @@ const LiveScore = () => {
               </div>
               <p className="text-3xl font-bold text-green-400">+{lastPoints}</p>
             </div>
-            {/* <div className="text-center">
-              <div className="flex items-center justify-center space-x-2 mb-2">
-                <Trophy className="h-6 w-6 text-purple-400" />
-                <span className="text-lg font-medium">Rank</span>
-              </div>
-              <p className="text-3xl font-bold text-purple-400">#42</p>
-            </div> */}
           </div>
         </div>
 
         {/* Match Score */}
-        <div className="bg-black/20 rounded-xl p-6 backdrop-blur-sm">
+        <div className={`${theme === 'dark' ? 'bg-black/20' : 'bg-white/20'} rounded-xl p-6 backdrop-blur-sm`}>
           <div className="flex justify-between items-center">
             {/* Team 1 */}
             <div className="text-center space-y-3 flex-1">
@@ -215,7 +210,7 @@ const LiveScore = () => {
           </div>
 
           {/* Last Ball Updates */}
-          <div className="mt-6 bg-white/5 rounded-lg p-4">
+          <div className={`mt-6 ${theme === 'dark' ? 'bg-white/5' : 'bg-black/5'} rounded-lg p-4`}>
             <div className="flex justify-between items-center">
               <div>
                 <p className="text-sm mb-1">
