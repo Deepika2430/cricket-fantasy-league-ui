@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import { getTeamPlayers } from "../services/matches";
+import { getTeamPlayers } from "../services/Matches";
 import { Loader2, Crown, Shield, X, Check, Coins } from "lucide-react";
 import { useTheme } from "./ui/theme-provider";
 import type { Player } from "../types/match";
@@ -318,7 +318,7 @@ const TeamSelection = () => {
           onClose: () => navigate("/matches"), // Navigate after toast disappears
           autoClose: 2000, // Wait for 2 seconds before closing
         });
-        
+
       } else {
         // alert(`Failed to create ${response.error}`);
         toast.error(`Failed to create team: ${response.error}`);

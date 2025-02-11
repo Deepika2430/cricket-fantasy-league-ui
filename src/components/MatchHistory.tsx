@@ -8,55 +8,7 @@ import { getUserDetailsById, getUserMatches } from '../services/UserService';
 import { useAuth } from '../context/AuthContext';
 import { useTheme } from './ui/theme-provider';
 import { Dialog, DialogContent, DialogTitle, DialogClose } from './ui/dialog';
-
-// Sample player data
-const samplePlayerData = [
-  {
-    Avatar: "https://img1.hscicdn.com/image/upload/f_auto/lsci/db/PICTURES/CMS/263600/263697.jpg",
-    Cost: 10,
-    Name: "Virat Kohli",
-    PlayerID: 1,
-    PlayerStats: null,
-    Role: "Batsman",
-    TeamID: 1,
-    IsCaptain: true,
-    IsViceCaptain: false,
-  },
-  {
-    Avatar: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQc6BFvmrM5KJMuT6RdDegOEAEpuxXgQ79-LA&s",
-    Cost: 8,
-    Name: "Rohit Sharma",
-    PlayerID: 2,
-    PlayerStats: null,
-    Role: "Batsman",
-    TeamID: 1,
-    IsCaptain: false,
-    IsViceCaptain: true,
-  },
-  {
-    Avatar: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTpFnbaWzGyIw2ShO4Lmz0z1HrqFkz491VKuQ&s",
-    Cost: 8,
-    Name: "Hardik Pandaya",
-    PlayerID: 3,
-    PlayerStats: null,
-    Role: "Batsman",
-    TeamID: 1,
-    IsCaptain: false,
-    IsViceCaptain: false,
-  },
-  {
-    Avatar: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTpFnbaWzGyIw2ShO4Lmz0z1HrqFkz491VKuQ&s",
-    Cost: 8,
-    Name: "Pandaya",
-    PlayerID: 4,
-    PlayerStats: null,
-    Role: "Batsman",
-    TeamID: 1,
-    IsCaptain: false,
-    IsViceCaptain: false,
-  },
-  // Add more sample players as needed
-];
+import { getPlayersInMatch } from '../services/Matches';
 
 // PlayerRole component
 const PlayerRole: React.FC<{ role: string }> = ({ role }) => {
@@ -161,7 +113,7 @@ const MatchHistory: React.FC = () => {
   const [userDetails, setUserDetails] = useState<any>({});
   const [userMatches, setUserMatches] = useState<any[]>([]);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
-  const [selectedMatch, setSelectedMatch] = useState<any>(null);
+  const [selectedMatchPlayers, setSelectedMatchPlayers] = useState<any[]>([]);
   const { userId } = useAuth();
   const { theme } = useTheme();
 
@@ -169,26 +121,26 @@ const MatchHistory: React.FC = () => {
     if (userId) {
       getUserDetailsById(userId).then(details => {
         setUserDetails(details);
-        console.log(details);
       });
 
       getUserMatches(userId).then(matches => {
-        console.log(matches);
         setUserMatches(matches.data);
-        console.log(matches.data);
       });
     } else {
       console.error("User ID is not available");
     }
   }, [userId]);
 
-  const userCoins = userDetails.TotalPoints || 0;
 
-  const handleMatchClick = (match: any) => {
-    console.log("Match ID:", match.match_id); // Print the match data to the console
-    
-    setSelectedMatch(samplePlayerData);
-    setIsDialogOpen(true);
+  const handleMatchClick = async (match: any) => {
+
+    try {
+      const response = await getPlayersInMatch(match.match_id);
+      setSelectedMatchPlayers(response?.Players);
+      setIsDialogOpen(true);
+    } catch (error) {
+      console.error("Error fetching players:", error);
+    }
   };
 
   return (
@@ -213,20 +165,20 @@ const MatchHistory: React.FC = () => {
         </div>
       </div>
       <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-        <DialogContent className={`${theme === "dark" ? "bg-gray-800 text-white" : "bg-white text-gray-900"}`}>
+        <DialogContent className={`${theme === "dark" ? "bg-gray-800 text-white" : "bg-white text-gray-900"} max-h-[80vh] overflow-y-auto`}>
           <DialogTitle>Team Details</DialogTitle>
           <div>
-            {selectedMatch && (
+            {selectedMatchPlayers && (
               <>
                 {/* Display Captain */}
-                {selectedMatch.filter(player => player.IsCaptain).map((player: any) => (
+                {selectedMatchPlayers.filter(player => player.IsCaptain).map((player: any) => (
                   <div key={player.PlayerID} className="grid grid-cols-5 gap-4 items-center mb-4 relative">
                     <div className="relative">
-                      <img src={player.Avatar} alt={player.Name} className="w-12 h-12 rounded-full" />
+                      <img src={player.Avatar} alt={player.PlayerName} className="w-12 h-12 rounded-full" />
                       <Crown className="absolute top-0 left-0 w-4 h-4 text-yellow-500" title="Captain" />
                     </div>
-                    <p className="">{player.Name}</p>
-                    <PlayerRole role={player.Role} />
+                    <p className="">{player.PlayerName}</p>
+                    <PlayerRole role={player.PlayerRole} />
                     <div className="flex items-center">
                       <Coins className="w-6 h-6 text-yellow-500 mr-2" />
                       {player.Cost}
@@ -235,14 +187,14 @@ const MatchHistory: React.FC = () => {
                 ))}
 
                 {/* Display Vice-Captain */}
-                {selectedMatch.filter(player => player.IsViceCaptain).map((player: any) => (
+                {selectedMatchPlayers.filter(player => player.IsViceCaptain).map((player: any) => (
                   <div key={player.PlayerID} className="grid grid-cols-5 gap-4 items-center mb-4 relative">
                     <div className="relative">
-                      <img src={player.Avatar} alt={player.Name} className="w-12 h-12 rounded-full" />
+                      <img src={player.Avatar} alt={player.PlayerName} className="w-12 h-12 rounded-full" />
                       <Shield className="absolute top-0 left-0 w-4 h-4 text-blue-500" title="Vice-Captain" />
                     </div>
-                    <p className="">{player.Name}</p>
-                    <PlayerRole role={player.Role} />
+                    <p className="">{player.PlayerName}</p>
+                    <PlayerRole role={player.PlayerRole} />
                     <div className="flex items-center">
                       <Coins className="w-6 h-6 text-yellow-500 mr-2" />
                       {player.Cost}
@@ -251,13 +203,13 @@ const MatchHistory: React.FC = () => {
                 ))}
 
                 {/* Display Other Players */}
-                {selectedMatch
+                {selectedMatchPlayers
                   .filter(player => !player.IsCaptain && !player.IsViceCaptain)
                   .map((player: any) => (
                     <div key={player.PlayerID} className="grid grid-cols-5 gap-4 items-center mb-4">
-                      <img src={player.Avatar} alt={player.Name} className="w-12 h-12 rounded-full" />
-                      <p className="">{player.Name}</p>
-                      <PlayerRole role={player.Role} />
+                      <img src={player.Avatar} alt={player.PlayerName} className="w-12 h-12 rounded-full" />
+                      <p className="">{player.PlayerName}</p>
+                      <PlayerRole role={player.PlayerRole} />
                       <div className="flex items-center">
                         <Coins className="w-6 h-6 text-yellow-500 mr-2" />
                         {player.Cost}
