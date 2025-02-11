@@ -29,7 +29,6 @@ export const login = async (email: string, password: string) => {
 
   const data = await response.json();
 
-  console.log(data);
   if (!response.ok) {
     throw new Error(data.message || 'Login failed');
   }
@@ -49,7 +48,6 @@ export const signup = async (username: string, email: string, password: string) 
 
   const data = await response.json();
 
-  console.log(data);
   if (!response.ok) {
     throw new Error(data.message || 'Signup failed');
   }

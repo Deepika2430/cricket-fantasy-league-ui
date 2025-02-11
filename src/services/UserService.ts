@@ -72,7 +72,6 @@ export const getUserDetails = async () => {
 
 export const updateUserDetails = async (updatedData: any) => {
   try {
-    console.log("Updating user details with:", updatedData);
     const token = Cookies.get('authToken');
     const myHeaders = new Headers();
     myHeaders.append("Authorization", `Bearer ${token}`);
@@ -93,7 +92,6 @@ export const updateUserDetails = async (updatedData: any) => {
     }
 
     const result = await response.json();
-    console.log("User details updated successfully:", result);
     return result;
   } catch (error) {
     console.error("Error updating user details:", error);
@@ -108,14 +106,11 @@ export const createTeam = async (teamData: any) => {
   myHeaders.append("Authorization", `Bearer ${token}`);
   myHeaders.append("Content-Type", "application/json");
 
-  console.log("Test", {user_id: userId, ...teamData})
   const requestOptions: RequestInit = {
     method: "POST",
     headers: myHeaders,
     body: JSON.stringify({user_id: userId, ...teamData}),
   };
-  console.log("In service:", teamData);
-  // return {status: true}
   try {
     const response = await fetch(`${config.apiBaseUrl}/userteams`, requestOptions);
     return (await response.json());

@@ -52,6 +52,12 @@ export const getUsers = async () => {
     return [...modifiedFriends, ...modifiedUsers];
 };
 
+export const getFriends = async () => {
+    const headers = getAuthHeaders();
+    const requestOptions = { method: "GET", headers, redirect: "follow" };
+    return fetchData("friends", requestOptions);
+};
+
 export const sendFriendRequest = async (friendUserId, status) => {
     const requestOptions = {
         method: "POST",
