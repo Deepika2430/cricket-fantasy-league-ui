@@ -15,7 +15,7 @@ export const getMatches = async () => {
   const response = await fetch(`${config.apiBaseUrl}/matches`, requestOptions);
   const data = await response.json();
   const matches = data?.data;
-  console.log(matches);
+  // console.log(matches);
   if (!response.ok) {
     throw new Error(data.message || 'Failed to fetch user matches');
   }
