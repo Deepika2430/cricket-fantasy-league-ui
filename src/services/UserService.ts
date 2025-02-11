@@ -99,3 +99,20 @@ export const updateUserDetails = async (updatedData: any) => {
     throw error; // Re-throw the error to be handled by the caller
   }
 };
+
+export const createTeam = (teamData) => {
+  const token = Cookies.get('authToken');
+  const myHeaders = new Headers();
+  myHeaders.append("Authorization", `Bearer ${token}`);
+  myHeaders.append("Content-Type", "application/json");
+
+  const requestOptions: RequestInit = {
+    method: "PUT",
+    headers: myHeaders,
+    body: JSON.stringify(teamData),
+  };
+  console.log("In service:", teamData);
+  return {status: true}
+  // const response = await fetch(`${config.apiBaseUrl}/users`, requestOptions);
+
+}
