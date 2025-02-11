@@ -15,7 +15,7 @@ import { getUserFromToken } from './services/AuthService';
 import { AuthProvider } from './context/AuthContext';
 import NotFound from './components/NotFound'
 import MainLayout from './components/MainLayout';
-import Login from './components/TestLogin';
+import Login from './components/Login';
 import CricketLiveScore from './components/CricketLiveScore';
 
 
