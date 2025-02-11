@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Search, UserPlus, UserMinus, Check, X, Circle, Clock } from 'lucide-react';
+import { Search, UserPlus, UserMinus, Check, X, Clock } from 'lucide-react';
 import { useTheme } from "./ui/theme-provider";
 import { getUsers, sendFriendRequest, removeFriend, getReceivedRequests, handleAcceptFriend } from '../services/Friends';
 
@@ -37,7 +37,11 @@ export default function FriendsComponent() {
 
   useEffect(() => {
     fetchUserFriends();
-  });
+    const interval = setInterval(() => {
+      fetchUserFriends();
+    }, 10000); // 10000ms = 10 seconds
+    return () => clearInterval(interval); // Cleanup interval on unmount
+  }, []);
 
   const handleSendFriendRequest = async (friend: Friend) => {
     try {
@@ -57,10 +61,10 @@ export default function FriendsComponent() {
     }
   };
 
-  const handleRemoveFriend = async (friendId: string) => {
+  const handleRemoveFriend = async (friend) => {
     try {
-      console.log(friendId)
-      await removeFriend(friendId);
+      console.log(friend)
+      await removeFriend(friend?.user_id);
       await fetchUserFriends(); // Refresh the friends list
       console.log("Withdrawing friend request");
     } catch (error) {
@@ -106,10 +110,10 @@ export default function FriendsComponent() {
                   />
                   <div>
                     <h3 className="font-semibold">{friend.friend_name}</h3>
-                    <div className="flex items-center space-x-1">
+                    {/* <div className="flex items-center space-x-1">
                       <Circle className={`w-3 h-3 ${friend.status === 'online' ? 'fill-green-500 text-green-500' : 'fill-gray-400 text-gray-400'}`} />
                       <span className="text-sm">{friend.status}</span>
-                    </div>
+                    </div> */}
                   </div>
                 </div>
                 <button
@@ -117,7 +121,7 @@ export default function FriendsComponent() {
                     ? `bg-red-100 ${theme === "dark" ? "bg-red-900/30 hover:bg-red-900/50 text-red-400" : "text-red-600 hover:bg-red-200"}`
                     : `bg-blue-100 ${theme === "dark" ? "bg-blue-900/30 text-blue-400 hover:bg-blue-900/50" : "text-blue-600 hover:bg-blue-200"}`
                     }`}
-                  onClick={() => friend.isFriend ? handleRemoveFriend(friend.friend_id!) : handleSendFriendRequest(friend)}
+                  onClick={() => friend.isFriend ? handleRemoveFriend(friend) : handleSendFriendRequest(friend)}
                 >
                   {friend.isFriend ? (
                     <>

@@ -17,7 +17,6 @@ const fetchData = async (endpoint, options) => {
 };
 
 export const getUsers = async () => {
-    console.log("function called");
     const headers = getAuthHeaders();
     const requestOptions = { method: "GET", headers, redirect: "follow" };
 
@@ -63,17 +62,32 @@ export const sendFriendRequest = async (friendUserId, status) => {
     return fetchData("friends", requestOptions);
 };
 
-export const removeFriend = async (friendId) => {
-    const requestOptions = { method: "DELETE", headers: getAuthHeaders(), redirect: "follow" };
-    await fetchData(`friends/${friendId}`, requestOptions);
+export const removeFriend = async (friendUserId) => {
+    const token = Cookies.get('authToken');
+    const myHeaders = new Headers();
+    const userId = getUserFromToken(token);
+    myHeaders.append("Content-Type", "application/json");
+    myHeaders.append("Authorization", `Bearer ${token}`);
+
+    const raw = JSON.stringify({
+        "user_id": userId,
+        "friend_user_id": friendUserId
+    });
+
+    const requestOptions = {
+        method: "DELETE",
+        headers: myHeaders,
+        body: raw,
+        redirect: "follow"
+    };
+    await fetchData(`friends`, requestOptions);
     return { message: "Friend removed successfully" };
 };
 
 export const getReceivedRequests = async () => {
-    console.log("getReceivedRequests")
     const requestOptions = { method: "GET", headers: getAuthHeaders(), redirect: "follow" };
     const response = await fetchData(`friends/requests`, requestOptions);
-    console.log(response);
+
     const requests = response?.data?.map((request) => {
         return {
             isFriend: false,
