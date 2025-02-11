@@ -6,7 +6,7 @@ import { useTheme } from "./ui/theme-provider";
 import type { Player } from "../types/match";
 import { getUserDetailsById } from "../services/userService";
 import Cookies from "js-cookie";
-// import cricketGroundImg from '../data/pixelcut-export.png'
+import cricketGroundImg from '../data/background.jpg'
 
 async function getValidImage(url: string, playerLogo: string): Promise<string> {
   return new Promise((resolve) => {
@@ -325,65 +325,62 @@ const TeamSelection = () => {
         </div>
         {/* Cricket Ground */}
         <div className="mb-8">
-          {!groundImageError ? (
-            <div
-              className="rounded-xl shadow-lg p-8 aspect-[2/1] relative bg-cover bg-center"
-              style={{
-                backgroundImage: `url(${GROUND_IMAGES[theme === "dark" ? "dark" : "light"]})`,
-              }}
-              onError={() => setGroundImageError(true)}
-            >
-              {/* Overlay for better visibility */}
-              <div className="absolute inset-0 bg-black bg-opacity-20 rounded-xl"></div>
+          <div
+            className={`rounded-xl shadow-lg p-8 aspect-[2/1] relative bg-cover bg-center ${groundImageError ? (theme === "dark" ? "bg-gray-700" : "bg-gray-200") : ""}`}
+            style={{
+              backgroundImage: !groundImageError ? `url(${GROUND_IMAGES[theme === "dark" ? "dark" : "light"]})` : `url(${GROUND_IMAGES[theme === "dark" ? "dark" : "light"]})`,
+            }}
+            onError={() => {
+              setGroundImageError(true); // Set error state if image fails to load
+              setLoading(false); // Reset loading state
+            }}
+          >
+            {/* Overlay for better visibility */}
+            <div className="absolute inset-0 bg-black bg-opacity-20 rounded-xl"></div>
 
-              {/* Render selected players */}
-              <div className="relative h-full">
-                {selectedPlayers.map((player, index) => (
-                  <div
-                    key={player.PlayerID}
-                    className="absolute w-16 h-16 transform -translate-x-1/2 -translate-y-1/2 transition-all duration-300"
-                    style={{
-                      left: PLAYER_POSITIONS[index]?.left || "50%",
-                      top: PLAYER_POSITIONS[index]?.top || "50%",
-                    }}
-                    onMouseEnter={() => setHoveredPlayer(player)}
-                    onMouseLeave={() => setHoveredPlayer(null)}
+            {/* Render selected players */}
+            <div className="relative h-full">
+              {selectedPlayers.map((player, index) => (
+                <div
+                  key={player.PlayerID}
+                  className="absolute w-16 h-16 transform -translate-x-1/2 -translate-y-1/2 transition-all duration-300"
+                  style={{
+                    left: PLAYER_POSITIONS[index]?.left || "50%",
+                    top: PLAYER_POSITIONS[index]?.top || "50%",
+                  }}
+                  onMouseEnter={() => setHoveredPlayer(player)}
+                  onMouseLeave={() => setHoveredPlayer(null)}
+                >
+                  <button
+                    onClick={() => handleGroundPlayerClick(player)}
+                    className="relative w-full h-full group"
                   >
-                    <button
-                      onClick={() => handleGroundPlayerClick(player)}
-                      className="relative w-full h-full group"
-                    >
-                      <img
-                        src={player.Avatar}
-                        alt={player.Name}
-                        className="w-16 h-16 rounded-full border-4 border-white object-cover shadow-lg group-hover:border-blue-400 transition-colors"
-                      />
-                      {player.isCaptain && (
-                        <Crown className="absolute -top-2 -right-2 w-6 h-6 text-yellow-400 drop-shadow-lg" />
-                      )}
-                      {player.isViceCaptain && (
-                        <Shield className="absolute -top-2 -right-2 w-6 h-6 text-blue-400 drop-shadow-lg" />
-                      )}
-                      {hoveredPlayer === player && (
-                        <div className="absolute -bottom-8 left-1/2 transform -translate-x-1/2 bg-black bg-opacity-75 text-white px-2 py-1 rounded text-sm whitespace-nowrap z-10">
-                          {player.Name}
-                        </div>
-                      )}
-                      {/* Display player cost at the bottom of the card */}
-                      <div className="absolute bottom-0 left-1/2 transform -translate-x-1/2 flex items-center bg-white text-black text-xs font-semibold rounded px-1">
-                        <Coins className="w-4 h-4 text-yellow-500 mr-1" /> {/* Yellow coins */}
-                        <span>{player.Cost || 100}</span> {/* Display player cost */}
+                    <img
+                      src={player.Avatar}
+                      alt={player.Name}
+                      className="w-16 h-16 rounded-full border-4 border-white object-cover shadow-lg group-hover:border-blue-400 transition-colors"
+                    />
+                    {player.isCaptain && (
+                      <Crown className="absolute -top-2 -right-2 w-6 h-6 text-yellow-400 drop-shadow-lg" />
+                    )}
+                    {player.isViceCaptain && (
+                      <Shield className="absolute -top-2 -right-2 w-6 h-6 text-blue-400 drop-shadow-lg" />
+                    )}
+                    {hoveredPlayer === player && (
+                      <div className="absolute -bottom-8 left-1/2 transform -translate-x-1/2 bg-black bg-opacity-75 text-white px-2 py-1 rounded text-sm whitespace-nowrap z-10">
+                        {player.Name}
                       </div>
-                    </button>
-                  </div>
-                ))}
-              </div>
+                    )}
+                    {/* Display player cost at the bottom of the card */}
+                    <div className="absolute bottom-0 left-1/2 transform -translate-x-1/2 flex items-center bg-white text-black text-xs font-semibold rounded px-1">
+                      <Coins className="w-4 h-4 text-yellow-500 mr-1" /> {/* Yellow coins */}
+                      <span>{player.Cost || 100}</span> {/* Display player cost */}
+                    </div>
+                  </button>
+                </div>
+              ))}
             </div>
-          ) : (
-            <div className="h-96 flex items-center justify-center">
-              <Loader2 className="w-8 h-8 animate-spin text-blue-600" />
-            </div>
-          )}
+          </div>
         </div>
         {/* Teams */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
