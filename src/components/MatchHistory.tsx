@@ -19,8 +19,8 @@ const samplePlayerData = [
     PlayerStats: null,
     Role: "Batsman",
     TeamID: 1,
-    isCaptain: true,
-    isViceCaptain: false,
+    IsCaptain: true,
+    IsViceCaptain: false,
   },
   {
     Avatar: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQc6BFvmrM5KJMuT6RdDegOEAEpuxXgQ79-LA&s",
@@ -30,8 +30,8 @@ const samplePlayerData = [
     PlayerStats: null,
     Role: "Batsman",
     TeamID: 1,
-    isCaptain: false,
-    isViceCaptain: true,
+    IsCaptain: false,
+    IsViceCaptain: true,
   },
   {
     Avatar: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTpFnbaWzGyIw2ShO4Lmz0z1HrqFkz491VKuQ&s",
@@ -41,8 +41,8 @@ const samplePlayerData = [
     PlayerStats: null,
     Role: "Batsman",
     TeamID: 1,
-    isCaptain: false,
-    isViceCaptain: false,
+    IsCaptain: false,
+    IsViceCaptain: false,
   },
   {
     Avatar: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTpFnbaWzGyIw2ShO4Lmz0z1HrqFkz491VKuQ&s",
@@ -52,8 +52,8 @@ const samplePlayerData = [
     PlayerStats: null,
     Role: "Batsman",
     TeamID: 1,
-    isCaptain: false,
-    isViceCaptain: false,
+    IsCaptain: false,
+    IsViceCaptain: false,
   },
   // Add more sample players as needed
 ];
@@ -219,7 +219,7 @@ const MatchHistory: React.FC = () => {
             {selectedMatch && (
               <>
                 {/* Display Captain */}
-                {selectedMatch.filter(player => player.isCaptain).map((player: any) => (
+                {selectedMatch.filter(player => player.IsCaptain).map((player: any) => (
                   <div key={player.PlayerID} className="grid grid-cols-5 gap-4 items-center mb-4 relative">
                     <div className="relative">
                       <img src={player.Avatar} alt={player.Name} className="w-12 h-12 rounded-full" />
@@ -235,7 +235,7 @@ const MatchHistory: React.FC = () => {
                 ))}
 
                 {/* Display Vice-Captain */}
-                {selectedMatch.filter(player => player.isViceCaptain).map((player: any) => (
+                {selectedMatch.filter(player => player.IsViceCaptain).map((player: any) => (
                   <div key={player.PlayerID} className="grid grid-cols-5 gap-4 items-center mb-4 relative">
                     <div className="relative">
                       <img src={player.Avatar} alt={player.Name} className="w-12 h-12 rounded-full" />
@@ -252,7 +252,7 @@ const MatchHistory: React.FC = () => {
 
                 {/* Display Other Players */}
                 {selectedMatch
-                  .filter(player => !player.isCaptain && !player.isViceCaptain)
+                  .filter(player => !player.IsCaptain && !player.IsViceCaptain)
                   .map((player: any) => (
                     <div key={player.PlayerID} className="grid grid-cols-5 gap-4 items-center mb-4">
                       <img src={player.Avatar} alt={player.Name} className="w-12 h-12 rounded-full" />
