@@ -6,6 +6,8 @@ import { useTheme } from "./ui/theme-provider";
 import type { Player } from "../types/match";
 import { getUserDetailsById, createTeam } from "../services/userService";
 import Cookies from "js-cookie";
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 // import cricketGroundImg from "../data/background.jpg";
 
 async function getValidImage(url: string, playerLogo: string): Promise<string> {
@@ -53,15 +55,14 @@ const PlayerButton = ({ player, isSelected, onClick, theme }) => {
     <button
       onClick={onClick}
       disabled={isSelected}
-      className={`w-full p-3 rounded-lg flex items-center justify-between transition-colors ${
-        theme === "dark"
+      className={`w-full p-3 rounded-lg flex items-center justify-between transition-colors ${theme === "dark"
           ? isSelected
             ? "bg-gray-700 cursor-not-allowed"
             : "bg-gray-700/50 hover:bg-gray-700"
           : isSelected
-          ? "bg-gray-100 cursor-not-allowed"
-          : "bg-blue-50 hover:bg-blue-100"
-      }`}
+            ? "bg-gray-100 cursor-not-allowed"
+            : "bg-blue-50 hover:bg-blue-100"
+        }`}
     >
       <div className="flex items-center space-x-3">
         <img
@@ -71,36 +72,34 @@ const PlayerButton = ({ player, isSelected, onClick, theme }) => {
         />
         <span className="font-medium">{player.Name}</span>
         <span
-          className={`px-2 py-1 text-sm font-medium rounded-full flex items-center gap-1 ${
-            theme === "dark"
+          className={`px-2 py-1 text-sm font-medium rounded-full flex items-center gap-1 ${theme === "dark"
               ? player.Role === "Batsman"
                 ? "bg-blue-600 text-white"
                 : player.Role === "Bowler"
-                ? "bg-green-600 text-white"
-                : player.Role === "Wicketkeeper"
-                ? "bg-yellow-600 text-gray-900"
-                : player.Role === "Allrounder"
-                ? "bg-red-600 text-white"
-                : "bg-gray-700 text-white"
+                  ? "bg-green-600 text-white"
+                  : player.Role === "Wicketkeeper"
+                    ? "bg-yellow-600 text-gray-900"
+                    : player.Role === "Allrounder"
+                      ? "bg-red-600 text-white"
+                      : "bg-gray-700 text-white"
               : player.Role === "Batsman"
-              ? "bg-blue-200 text-blue-800"
-              : player.Role === "Bowler"
-              ? "bg-green-200 text-green-800"
-              : player.Role === "Wicketkeeper"
-              ? "bg-yellow-200 text-yellow-800"
-              : player.Role === "Allrounder"
-              ? "bg-red-200 text-red-800"
-              : "bg-gray-200 text-gray-800"
-          }`}
+                ? "bg-blue-200 text-blue-800"
+                : player.Role === "Bowler"
+                  ? "bg-green-200 text-green-800"
+                  : player.Role === "Wicketkeeper"
+                    ? "bg-yellow-200 text-yellow-800"
+                    : player.Role === "Allrounder"
+                      ? "bg-red-200 text-red-800"
+                      : "bg-gray-200 text-gray-800"
+            }`}
         >
           {player.Role}
         </span>
         <span
-          className={`px-3 py-1.5 text-sm font-medium rounded-full flex items-center gap-2 border shadow-sm transition-all duration-200 ${
-            theme === "dark"
+          className={`px-3 py-1.5 text-sm font-medium rounded-full flex items-center gap-2 border shadow-sm transition-all duration-200 ${theme === "dark"
               ? "bg-gradient-to-r from-gray-700 to-gray-800 text-white border-gray-600"
               : "bg-gradient-to-r from-yellow-200 to-yellow-400 text-gray-900 border-yellow-500"
-          }`}
+            }`}
         >
           <Coins className="w-4 h-4 text-yellow-500 animate-none" />
           {player?.Cost || 100}
@@ -110,9 +109,8 @@ const PlayerButton = ({ player, isSelected, onClick, theme }) => {
         <Check className="w-5 h-5 text-green-500" />
       ) : (
         <div
-          className={`w-5 h-5 rounded-full border-2 ${
-            theme === "dark" ? "border-gray-600" : "border-gray-300"
-          }`}
+          className={`w-5 h-5 rounded-full border-2 ${theme === "dark" ? "border-gray-600" : "border-gray-300"
+            }`}
         />
       )}
     </button>
@@ -302,20 +300,32 @@ const TeamSelection = () => {
     if (!canSubmit) return;
     // Call the API to submit the team selected players having data of selected players
     try {
-    const response = await createTeam({
-      match_id: match.match_id,
-      userTeamName: `${match.team1.team_name}-${match.team2.team_name}`,
-      userTeamPlayers: selectedPlayers,
-    });
-    if (response.status) {
-      alert("Team created successfully!");
-      navigate("/matches");
-    } else {
-      alert(`Failed to create ${response.error}`);
+      const formattedPlayers = selectedPlayers.map(player => ({
+        player_id: player.PlayerID,
+        is_captain: player.isCaptain,
+        is_vice_captain: player.isViceCaptain,
+        // Add any other keys you want to include here
+    }));
+      const response = await createTeam({
+        match_id: match.match_id,
+        user_team_name: `${match.team1.team_name}-${match.team2.team_name}`,
+        user_team_players: formattedPlayers,
+      });
+      console.log("Team created successfully:", response);
+      if (response.success) {
+        // alert("Team created successfully!");
+        toast.success('Team created successfully!', {
+          onClose: () => navigate("/matches"), // Navigate after toast disappears
+          autoClose: 2000, // Wait for 2 seconds before closing
+        });
+        
+      } else {
+        // alert(`Failed to create ${response.error}`);
+        toast.error(`Failed to create team: ${response.error}`);
+      }
+    } catch (error) {
+      console.log("Error in team creation: ", error);
     }
-  } catch (error) {
-    console.log("Error in team creation: ",error);
-  }
     // console.log("Team submitted:", selectedPlayers);
   };
 
@@ -329,15 +339,13 @@ const TeamSelection = () => {
 
   return (
     <div
-      className={`right-0 min-h-screen p-4 md:p-8 ${
-        theme === "dark" ? "bg-gray-900 text-white" : "bg-gray-50 text-gray-900"
-      }`}
+      className={`right-0 min-h-screen p-4 md:p-8 ${theme === "dark" ? "bg-gray-900 text-white" : "bg-gray-50 text-gray-900"
+        }`}
     >
       {/* Fixed container for profile picture and user amount */}
       <div
-        className={`fixed top-16 right-0 left-[16rem] w-[calc(100%-16rem)] z-30 ${
-          theme === "dark" ? "bg-gray-900" : "bg-white"
-        } p-2 shadow-md flex items-center justify-between`}
+        className={`fixed top-16 right-0 left-[16rem] w-[calc(100%-16rem)] z-30 ${theme === "dark" ? "bg-gray-900" : "bg-white"
+          } p-2 shadow-md flex items-center justify-between`}
       >
         {/* Profile Picture */}
         <img
@@ -350,15 +358,14 @@ const TeamSelection = () => {
         <div className="flex items-center text-lg font-bold p-4">
           <Coins className="w-6 h-6 text-yellow-500 mr-2" />
           <span
-            className={`text-black ${
-              theme === "dark" ? "text-white" : "text-black"
-            }`}
+            className={`text-black ${theme === "dark" ? "text-white" : "text-black"
+              }`}
           >
             {userTotalAmount}
           </span>
         </div>
       </div>
-
+      <ToastContainer />
       {/* Main content area */}
       <div className="max-w-7xl mx-auto mt-20">
         {/* Header with close button */}
@@ -366,9 +373,8 @@ const TeamSelection = () => {
           <h1 className="text-3xl font-bold">Create Your Dream Team</h1>
           <button
             onClick={handleExit}
-            className={`p-2 rounded-full transition-colors ${
-              theme === "dark" ? "hover:bg-gray-800" : "hover:bg-gray-100"
-            }`}
+            className={`p-2 rounded-full transition-colors ${theme === "dark" ? "hover:bg-gray-800" : "hover:bg-gray-100"
+              }`}
           >
             <X className="w-6 h-6" />
           </button>
@@ -376,13 +382,12 @@ const TeamSelection = () => {
         {/* Cricket Ground */}
         <div className="mb-8">
           <div
-            className={`rounded-xl shadow-lg p-8 aspect-[2/1] relative bg-cover bg-center ${
-              groundImageError
+            className={`rounded-xl shadow-lg p-8 aspect-[2/1] relative bg-cover bg-center ${groundImageError
                 ? theme === "dark"
                   ? "bg-gray-700"
                   : "bg-gray-200"
                 : ""
-            }`}
+              }`}
             style={{
               backgroundImage: !groundImageError
                 ? `url(${GROUND_IMAGES[theme === "dark" ? "dark" : "light"]})`
@@ -446,9 +451,8 @@ const TeamSelection = () => {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
           {/* Team 1 Players */}
           <div
-            className={`rounded-xl shadow-lg p-6 ${
-              theme === "dark" ? "bg-gray-800" : "bg-white"
-            }`}
+            className={`rounded-xl shadow-lg p-6 ${theme === "dark" ? "bg-gray-800" : "bg-white"
+              }`}
           >
             <h2 className="text-xl font-semibold mb-4">
               {match.team1.team_name}
@@ -473,9 +477,8 @@ const TeamSelection = () => {
 
           {/* Team 2 Players */}
           <div
-            className={`rounded-xl shadow-lg p-6 ${
-              theme === "dark" ? "bg-gray-800" : "bg-white"
-            }`}
+            className={`rounded-xl shadow-lg p-6 ${theme === "dark" ? "bg-gray-800" : "bg-white"
+              }`}
           >
             <h2 className="text-xl font-semibold mb-4">
               {match.team2.team_name}
@@ -504,15 +507,14 @@ const TeamSelection = () => {
           <button
             onClick={handleSubmit}
             disabled={!canSubmit}
-            className={`px-6 py-2 rounded-lg font-semibold transition-colors ${
-              canSubmit
+            className={`px-6 py-2 rounded-lg font-semibold transition-colors ${canSubmit
                 ? theme === "dark"
                   ? "bg-blue-600 text-white hover:bg-blue-700"
                   : "bg-blue-600 text-white hover:bg-blue-700"
                 : theme === "dark"
-                ? "bg-gray-700 text-gray-400 cursor-not-allowed"
-                : "bg-gray-300 text-gray-500 cursor-not-allowed"
-            }`}
+                  ? "bg-gray-700 text-gray-400 cursor-not-allowed"
+                  : "bg-gray-300 text-gray-500 cursor-not-allowed"
+              }`}
           >
             Submit Team
           </button>
@@ -523,9 +525,8 @@ const TeamSelection = () => {
       {showRoleDialog && selectedPlayerForRole && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
           <div
-            className={`rounded-lg max-w-md w-full p-6 ${
-              theme === "dark" ? "bg-gray-800" : "bg-white"
-            }`}
+            className={`rounded-lg max-w-md w-full p-6 ${theme === "dark" ? "bg-gray-800" : "bg-white"
+              }`}
           >
             <div className="flex justify-between items-center mb-4">
               <h3 className="text-xl font-semibold">Player Actions</h3>
@@ -541,11 +542,10 @@ const TeamSelection = () => {
               {!selectedPlayerForRole.isCaptain && (
                 <button
                   onClick={() => handleRoleSelection("captain")}
-                  className={`w-full p-3 rounded-lg flex items-center space-x-2 ${
-                    theme === "dark"
+                  className={`w-full p-3 rounded-lg flex items-center space-x-2 ${theme === "dark"
                       ? "bg-yellow-900/50 hover:bg-yellow-900/70"
                       : "bg-yellow-50 hover:bg-yellow-100"
-                  }`}
+                    }`}
                 >
                   <Crown className="w-5 h-5 text-yellow-600" />
                   <span>Make Captain</span>
@@ -555,11 +555,10 @@ const TeamSelection = () => {
               {!selectedPlayerForRole.isViceCaptain && (
                 <button
                   onClick={() => handleRoleSelection("viceCaptain")}
-                  className={`w-full p-3 rounded-lg flex items-center space-x-2 ${
-                    theme === "dark"
+                  className={`w-full p-3 rounded-lg flex items-center space-x-2 ${theme === "dark"
                       ? "bg-blue-900/50 hover:bg-blue-900/70"
                       : "bg-blue-50 hover:bg-blue-100"
-                  }`}
+                    }`}
                 >
                   <Shield className="w-5 h-5 text-blue-600" />
                   <span>Make Vice Captain</span>
@@ -568,26 +567,24 @@ const TeamSelection = () => {
 
               {(selectedPlayerForRole.isCaptain ||
                 selectedPlayerForRole.isViceCaptain) && (
-                <button
-                  onClick={() => handleRoleSelection("removeRole")}
-                  className={`w-full p-3 rounded-lg flex items-center space-x-2 ${
-                    theme === "dark"
-                      ? "bg-orange-900/50 hover:bg-orange-900/70"
-                      : "bg-orange-50 hover:bg-orange-100"
-                  }`}
-                >
-                  <X className="w-5 h-5 text-orange-600" />
-                  <span>Remove Role</span>
-                </button>
-              )}
+                  <button
+                    onClick={() => handleRoleSelection("removeRole")}
+                    className={`w-full p-3 rounded-lg flex items-center space-x-2 ${theme === "dark"
+                        ? "bg-orange-900/50 hover:bg-orange-900/70"
+                        : "bg-orange-50 hover:bg-orange-100"
+                      }`}
+                  >
+                    <X className="w-5 h-5 text-orange-600" />
+                    <span>Remove Role</span>
+                  </button>
+                )}
 
               <button
                 onClick={() => handleRoleSelection("remove")}
-                className={`w-full p-3 rounded-lg flex items-center space-x-2 ${
-                  theme === "dark"
+                className={`w-full p-3 rounded-lg flex items-center space-x-2 ${theme === "dark"
                     ? "bg-red-900/50 hover:bg-red-900/70"
                     : "bg-red-50 hover:bg-red-100"
-                }`}
+                  }`}
               >
                 <X className="w-5 h-5 text-red-600" />
                 <span>Remove Player</span>
@@ -601,9 +598,8 @@ const TeamSelection = () => {
       {showExitConfirmation && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
           <div
-            className={`rounded-lg max-w-md w-full p-6 ${
-              theme === "dark" ? "bg-gray-800" : "bg-white"
-            }`}
+            className={`rounded-lg max-w-md w-full p-6 ${theme === "dark" ? "bg-gray-800" : "bg-white"
+              }`}
           >
             <h3 className="text-xl font-semibold mb-4">Confirm Exit</h3>
             <p
@@ -616,11 +612,10 @@ const TeamSelection = () => {
             <div className="flex justify-end space-x-4">
               <button
                 onClick={() => setShowExitConfirmation(false)}
-                className={`px-4 py-2 rounded-lg ${
-                  theme === "dark"
+                className={`px-4 py-2 rounded-lg ${theme === "dark"
                     ? "text-gray-300 hover:bg-gray-700"
                     : "text-gray-600 hover:bg-gray-100"
-                }`}
+                  }`}
               >
                 Cancel
               </button>
