@@ -4,7 +4,7 @@ import { Route, Routes, Navigate, BrowserRouter as Router } from 'react-router-d
 import Dashboard from './components/Dashboard';
 import Home from './components/Home';
 import Layout from './components/Layout';
-import Profile from './components/Profile';
+import MatchHistory from './components/MatchHistory';
 import Matches from './components/Matches';
 import Team from './components/TeamSelection';
 import Groups from './components/Groups';
@@ -40,7 +40,7 @@ function App() {
           <Route element={<Layout />}>
               <Route path="/home" element={<Home />} />
               <Route path="/matches" element={<Matches />} />
-              <Route path="/match-history" element={<Profile />} />
+              <Route path="/match-history" element={<MatchHistory />} />
               <Route path="/team" element={<Team />} />
               <Route path="/groups" element={<Groups />} />
               <Route path="/friends" element={<Friends />} />

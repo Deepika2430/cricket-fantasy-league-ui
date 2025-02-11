@@ -1,12 +1,13 @@
 import React, { useEffect } from 'react';
 import avatarImage from '../data/cricket-player-ready-to-hit.png';
 import { Coins, CalendarDays, MapPin, Trophy, Activity } from 'lucide-react';
-import { Card, CardContent, CardHeader } from '../components/ui/card';
-import { Badge } from '../components/ui/badge';
-import { cn } from '../components/ui/lib/utils';
+import { Card, CardContent, CardHeader } from './ui/card';
+import { Badge } from './ui/badge';
+import { cn } from './ui/lib/utils';
 import { getUserDetailsById, getUserMatches } from '../services/UserService';
 import { useAuth } from '../context/AuthContext';
 import { useTheme } from './ui/theme-provider';
+import { Match } from '../types/match';
 
 // MatchCard component
 const MatchCard: React.FC<{ match: any }> = ({ match }) => {
@@ -77,7 +78,7 @@ const MatchCard: React.FC<{ match: any }> = ({ match }) => {
   );
 };
 
-const Profile: React.FC = () => {
+const MatchHistory: React.FC = () => {
   const [userDetails, setUserDetails] = React.useState<any>({});
   const [userMatches, setUserMatches] = React.useState<any[]>([]);
   const { userId } = useAuth();
@@ -127,4 +128,4 @@ const Profile: React.FC = () => {
   );
 };
 
-export default Profile;
+export default MatchHistory;
