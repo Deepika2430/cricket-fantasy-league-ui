@@ -1,17 +1,96 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import avatarImage from '../data/cricket-player-ready-to-hit.png';
-import { Coins, CalendarDays, MapPin, Trophy, Activity } from 'lucide-react';
+import { Coins, CalendarDays, MapPin, Trophy, Activity, Crown, Shield } from 'lucide-react';
 import { Card, CardContent, CardHeader } from './ui/card';
 import { Badge } from './ui/badge';
 import { cn } from './ui/lib/utils';
 import { getUserDetailsById, getUserMatches } from '../services/UserService';
 import { useAuth } from '../context/AuthContext';
 import { useTheme } from './ui/theme-provider';
-import { Match } from '../types/match';
+import { Dialog, DialogContent, DialogTitle, DialogClose } from './ui/dialog';
 
-// MatchCard component
-const MatchCard: React.FC<{ match: any }> = ({ match }) => {
-  const {theme} = useTheme();
+// Sample player data
+const samplePlayerData = [
+  {
+    Avatar: "https://img1.hscicdn.com/image/upload/f_auto/lsci/db/PICTURES/CMS/263600/263697.jpg",
+    Cost: 10,
+    Name: "Virat Kohli",
+    PlayerID: 1,
+    PlayerStats: null,
+    Role: "Batsman",
+    TeamID: 1,
+    isCaptain: true,
+    isViceCaptain: false,
+  },
+  {
+    Avatar: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQc6BFvmrM5KJMuT6RdDegOEAEpuxXgQ79-LA&s",
+    Cost: 8,
+    Name: "Rohit Sharma",
+    PlayerID: 2,
+    PlayerStats: null,
+    Role: "Batsman",
+    TeamID: 1,
+    isCaptain: false,
+    isViceCaptain: true,
+  },
+  {
+    Avatar: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTpFnbaWzGyIw2ShO4Lmz0z1HrqFkz491VKuQ&s",
+    Cost: 8,
+    Name: "Hardik Pandaya",
+    PlayerID: 3,
+    PlayerStats: null,
+    Role: "Batsman",
+    TeamID: 1,
+    isCaptain: false,
+    isViceCaptain: false,
+  },
+  {
+    Avatar: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTpFnbaWzGyIw2ShO4Lmz0z1HrqFkz491VKuQ&s",
+    Cost: 8,
+    Name: "Pandaya",
+    PlayerID: 4,
+    PlayerStats: null,
+    Role: "Batsman",
+    TeamID: 1,
+    isCaptain: false,
+    isViceCaptain: false,
+  },
+  // Add more sample players as needed
+];
+
+// PlayerRole component
+const PlayerRole: React.FC<{ role: string }> = ({ role }) => {
+  const { theme } = useTheme(); // Ensure theme is available
+  return (
+    <span
+      className={`px-2 py-1 text-sm font-medium rounded-full flex items-center gap-1 ${theme === "dark"
+        ? role === "Batsman"
+          ? "bg-blue-600 text-white"
+          : role === "Bowler"
+            ? "bg-green-600 text-white"
+            : role === "Wicketkeeper"
+              ? "bg-yellow-600 text-gray-900"
+              : role === "Allrounder"
+                ? "bg-red-600 text-white"
+                : "bg-gray-700 text-white"
+        : role === "Batsman"
+          ? "bg-blue-200 text-blue-800"
+          : role === "Bowler"
+            ? "bg-green-200 text-green-800"
+            : role === "Wicketkeeper"
+              ? "bg-yellow-200 text-yellow-800"
+              : role === "Allrounder"
+                ? "bg-red-200 text-red-800"
+                : "bg-gray-200 text-gray-800"
+        }`}
+    >
+      {role}
+    </span>
+  );
+};
+
+const MatchCard: React.FC<{ match: any; onClick: (match: any) => void }> = ({ match, onClick }) => {
+  const { theme } = useTheme();
   const statusColors = {
     live: "text-red-500 bg-red-50 hover:bg-red-100",
     completed: "text-green-500 bg-green-50 hover:bg-green-100",
@@ -25,7 +104,7 @@ const MatchCard: React.FC<{ match: any }> = ({ match }) => {
   };
 
   return (
-    <Card className={`${theme === "dark" ? "bg-gray-800 border-gray-700 hover:border-gray-600 border-t-4 border-t-primary" : "bg-white border-t-4 border-t-primary border-gray-300 hover:bg-gray-1 "} overflow-hidden hover:shadow-lg transition-all duration-300 border-t-4 border-t-primary`}>
+    <Card onClick={() => onClick(match)} className={`${theme === "dark" ? "bg-gray-800 border-gray-700 hover:border-gray-600" : "bg-white border-gray-300 hover:bg-gray-100"} overflow-hidden hover:shadow-lg transition-all duration-300 border-t-4 border-t-primary`}>
       <CardHeader className="p-4 pb-2">
         <div className="flex justify-between items-start mb-2">
           <Badge
@@ -79,8 +158,10 @@ const MatchCard: React.FC<{ match: any }> = ({ match }) => {
 };
 
 const MatchHistory: React.FC = () => {
-  const [userDetails, setUserDetails] = React.useState<any>({});
-  const [userMatches, setUserMatches] = React.useState<any[]>([]);
+  const [userDetails, setUserDetails] = useState<any>({});
+  const [userMatches, setUserMatches] = useState<any[]>([]);
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [selectedMatch, setSelectedMatch] = useState<any>(null);
   const { userId } = useAuth();
   const { theme } = useTheme();
 
@@ -103,6 +184,13 @@ const MatchHistory: React.FC = () => {
 
   const userCoins = userDetails.TotalPoints || 0;
 
+  const handleMatchClick = (match: any) => {
+    console.log("Match ID:", match.match_id); // Print the match data to the console
+    
+    setSelectedMatch(samplePlayerData);
+    setIsDialogOpen(true);
+  };
+
   return (
     <div className={`flex flex-col h-screen p-4 ${theme === "dark" ? "bg-gray-900 text-white" : "bg-white text-gray-900"}`}>
       <div className="flex justify-between items-center mb-4">
@@ -120,10 +208,68 @@ const MatchHistory: React.FC = () => {
         <h2 className="text-xl font-semibold mb-2">Match Details</h2>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
           {userMatches?.map((match, index) => (
-            <MatchCard key={index} match={match} />
+            <MatchCard key={index} match={match} onClick={handleMatchClick} />
           ))}
         </div>
       </div>
+      <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+        <DialogContent className={`${theme === "dark" ? "bg-gray-800 text-white" : "bg-white text-gray-900"}`}>
+          <DialogTitle>Team Details</DialogTitle>
+          <div>
+            {selectedMatch && (
+              <>
+                {/* Display Captain */}
+                {selectedMatch.filter(player => player.isCaptain).map((player: any) => (
+                  <div key={player.PlayerID} className="grid grid-cols-5 gap-4 items-center mb-4 relative">
+                    <div className="relative">
+                      <img src={player.Avatar} alt={player.Name} className="w-12 h-12 rounded-full" />
+                      <Crown className="absolute top-0 left-0 w-4 h-4 text-yellow-500" title="Captain" />
+                    </div>
+                    <p className="">{player.Name}</p>
+                    <PlayerRole role={player.Role} />
+                    <div className="flex items-center">
+                      <Coins className="w-6 h-6 text-yellow-500 mr-2" />
+                      {player.Cost}
+                    </div>
+                  </div>
+                ))}
+
+                {/* Display Vice-Captain */}
+                {selectedMatch.filter(player => player.isViceCaptain).map((player: any) => (
+                  <div key={player.PlayerID} className="grid grid-cols-5 gap-4 items-center mb-4 relative">
+                    <div className="relative">
+                      <img src={player.Avatar} alt={player.Name} className="w-12 h-12 rounded-full" />
+                      <Shield className="absolute top-0 left-0 w-4 h-4 text-blue-500" title="Vice-Captain" />
+                    </div>
+                    <p className="">{player.Name}</p>
+                    <PlayerRole role={player.Role} />
+                    <div className="flex items-center">
+                      <Coins className="w-6 h-6 text-yellow-500 mr-2" />
+                      {player.Cost}
+                    </div>
+                  </div>
+                ))}
+
+                {/* Display Other Players */}
+                {selectedMatch
+                  .filter(player => !player.isCaptain && !player.isViceCaptain)
+                  .map((player: any) => (
+                    <div key={player.PlayerID} className="grid grid-cols-5 gap-4 items-center mb-4">
+                      <img src={player.Avatar} alt={player.Name} className="w-12 h-12 rounded-full" />
+                      <p className="">{player.Name}</p>
+                      <PlayerRole role={player.Role} />
+                      <div className="flex items-center">
+                        <Coins className="w-6 h-6 text-yellow-500 mr-2" />
+                        {player.Cost}
+                      </div>
+                    </div>
+                  ))}
+              </>
+            )}
+          </div>
+          {/* <DialogClose>Close</DialogClose> */}
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };
