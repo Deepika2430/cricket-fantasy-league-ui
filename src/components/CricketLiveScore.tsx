@@ -50,7 +50,6 @@ const LiveScore = () => {
   const totalPointsRef = useRef(0);
 
   const calculatePoints = useCallback((stats: PlayerStats) => {
-    console.log("Calculating points");
     const battingPoints = calculateBattingPoints(stats);
     const bowlingPoints = calculateBowlingPoints(stats);
     const fieldingPoints = calculateFieldingPoints(stats);
@@ -59,7 +58,6 @@ const LiveScore = () => {
 
   const updatePlayerStats = useCallback((data: ScoreData) => {
     const currentStats = playerStatsRef.current;
-    console.log(data)
     if (data.ball_data.batsman === currentStats.name) {
       const newStats = { ...currentStats };
       newStats.runs += data.ball_data.runs;
@@ -79,7 +77,6 @@ const LiveScore = () => {
       setTotalPoints(newTotalPoints);
       setLastPoints(pointsDiff);
     }
-    console.log(totalPoints);
   }, [calculatePoints]);
 
   const fetchScore = useCallback(async () => {
@@ -88,13 +85,11 @@ const LiveScore = () => {
       // In production, replace this with actual API call:
       const data = await getLiveScore();
       // const data = response?.data;
-      console.log(data)
       // const data = mockApiResponse;
       setScoreData(data);
       setError(null);
 
       updatePlayerStats(data);
-      console.log(lastPoints)
     } catch (error) {
       setError('Failed to fetch score data. Please try again later.');
       console.error('Error fetching score:', error);

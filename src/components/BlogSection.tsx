@@ -25,7 +25,6 @@ const blogs = [
 const BlogSection = () => {
   const { theme } = useTheme();
   const isDarkMode = theme === "dark";
-  console.log(theme, isDarkMode);
 
   return (
     <section className={`py-20 transition-all duration-300 ${theme === "dark" ? "bg-gray-900 text-white" : "bg-gray-50 text-black"}`}>

@@ -64,22 +64,22 @@ export function Header() {
           </button>
           {showProfileMenu && (
             <div
-            className={`absolute right-5 w-auto p-2  border-white rounded-lg shadow-lg 
-                        inline-flex items-center whitespace-nowrap 
+            className={`absolute right-5 w-auto p-2  border-white rounded-lg shadow-lg
+                        inline-flex items-center whitespace-nowrap
                         ${theme === "dark" ? "text-white bg-gray-900" : "bg-white text-black"}`}
             onMouseEnter={() => setShowProfileMenu(true)}
             onMouseLeave={() => setShowProfileMenu(false)}
           >
             <button
               onClick={confirmSignOut}
-              className={`text-sm pr-4 py-2 p-2 
+              className={`text-sm pr-4 py-2 p-2
                           ${theme === "dark" ? "hover:bg-gray-1000 bg-gray-900" : "hover:bg-gray-200 hover:px-3"}`}
             >
               Sign Out
             </button>
           </div>
-          
-          
+
+
           )}
         </div>
       </div>

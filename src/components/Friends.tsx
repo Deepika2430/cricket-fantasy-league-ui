@@ -29,7 +29,6 @@ export default function FriendsComponent() {
   const fetchUserFriends = async (): Promise<void> => {
     const response = await getUsers();
     const receivedRequests = await getReceivedRequests();
-    console.log(receivedRequests);
     setFriends(response.filter(friend => friend.status !== 'pending'));
     setReceivedRequests(receivedRequests);
     setSentRequests(response.filter(friend => friend.status === 'pending'));
@@ -63,10 +62,8 @@ export default function FriendsComponent() {
 
   const handleRemoveFriend = async (friend) => {
     try {
-      console.log(friend)
       await removeFriend(friend?.user_id);
       await fetchUserFriends(); // Refresh the friends list
-      console.log("Withdrawing friend request");
     } catch (error) {
       console.error("Error removing friend:", error);
     }

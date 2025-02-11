@@ -27,7 +27,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const setToken = (token: string) => {
     Cookies.set('authToken', token, { secure: true, sameSite: 'Strict', expires: 1 });
     setTokenState(token);
-    console.log("New token set in: ", token);
     const extractedUserId = getUserFromToken(token);
     setUserId(extractedUserId);
   };

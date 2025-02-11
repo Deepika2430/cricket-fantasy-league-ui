@@ -38,7 +38,6 @@ export default function Account() {
     const fetchUserDetails = async () => {
       try {
         const response: UserData = await getUserDetails(); // Fetch user details
-        console.log(response);
         setUserData(response); // Set user data from API response
         setTempData(response); // Set tempData to the fetched user data
         setProfileImage(response.profileImage);
@@ -108,8 +107,6 @@ export default function Account() {
 
   const handleChangePassword = async () => {
     // Logic to handle password change
-    console.log("Old Password:", oldPassword);
-    console.log("New Password:", newPassword);
     try {
       await updateUserDetails({oldPassword, newPassword}); // Call the imported update function
       alert("User password updated successfully!"); // Show success alert
