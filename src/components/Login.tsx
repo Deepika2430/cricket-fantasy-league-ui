@@ -50,7 +50,8 @@ export default function AuthForm() {
         navigate("/home");
       } catch (error) {
         console.log(error);
-        formik.setFieldError('general', 'Authentication failed. Please check your credentials and try again.');
+        toast.error(error?.message);
+        formik.setFieldError('general', `Authentication failed. Please check your credentials and try again ${error?.message}`);
       }
     },
   });
@@ -64,9 +65,9 @@ export default function AuthForm() {
   }, [isRegister]);
 
   return (
-    <div className="flex justify-center items-center min-h-screen bg-gradient-to-r from-gray-200 to-gray-500">
+    <div className="flex justify-center items-center min-h-screen bg-gray-400 p-5 ">
       <ToastContainer />
-      <div className="relative w-[850px] h-[550px] bg-gray-300 rounded-3xl shadow-2xl overflow-hidden">
+      <div className="relative w-[750px] h-[450px] bg-gray-300 rounded-3xl shadow-2xl overflow-hidden">
 
         <div
           className={`absolute inset-0 w-1/2 h-full bg-gray-300 flex flex-col justify-center items-center text-center p-10 transition-all duration-500 ${isRegister ? "-translate-x-full opacity-0 pointer-events-none" : "translate-x-full opacity-100 pointer-events-auto"}`}
@@ -180,7 +181,7 @@ export default function AuthForm() {
 
         <div className="absolute inset-0 w-full h-full flex items-center justify-center">
           <div
-            className="absolute w-full h-full bg-gray-700 rounded-[150px] transition-all duration-700"
+            className="absolute w-full h-full bg-gray-800 rounded-[150px] transition-all duration-700"
             style={{ transform: isRegister ? "translateX(50%) " : "translateX(-50%)" }}
           ></div>
           <div className="absolute flex justify-between w-full px-10">
