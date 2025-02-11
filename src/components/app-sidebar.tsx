@@ -9,6 +9,7 @@ import {
   HelpCircle,
   Send,
   ChevronDown,
+  History,
 } from "lucide-react";
 
 import {
@@ -41,14 +42,14 @@ const sidebarItems = {
       icon: Home,
     },
     {
-      title: "My Profile",
-      url: "/profile",
-      icon: CircleUserRound,
-    },
-    {
       title: "Matches",
       url: "/matches",
       icon: Swords,
+    },
+    {
+      title: "Match History",
+      url: "/match-history",
+      icon: History,
     },
     {
       title: "Groups",
@@ -80,8 +81,8 @@ const sidebarItems = {
   ],
   footerItems: [
     {
-      title: "Account",
-      url: "/account",
+      title: "My Profile",
+      url: "/my-profile",
       icon: CircleUserRound,
     },
   ],

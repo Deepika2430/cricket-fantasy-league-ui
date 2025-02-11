@@ -40,11 +40,11 @@ function App() {
           <Route element={<Layout />}>
               <Route path="/home" element={<Home />} />
               <Route path="/matches" element={<Matches />} />
-              <Route path="/profile" element={<Profile />} />
+              <Route path="/match-history" element={<Profile />} />
               <Route path="/team" element={<Team />} />
               <Route path="/groups" element={<Groups />} />
               <Route path="/friends" element={<Friends />} />
-              <Route path="/account" element={<Account />} />
+              <Route path="/my-profile" element={<Account />} />
               <Route path="/dashboard" element={<Dashboard />} />
             </Route>
             <Route path="/signout" element={<Signout />} />
