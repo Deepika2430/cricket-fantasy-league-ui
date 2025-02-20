@@ -15,13 +15,21 @@ const fetchData = async (endpoint, options) => {
     return response.json();
 };
 
+export const getGroups = async () => {
+    const requestOptions = {
+        method: "GET",
+        headers: getAuthHeaders(),
+        redirect: "follow"
+    };
+    return fetchData("groups", requestOptions);
+}
+
 export const createGroup = async (groupData) => {
     const requestOptions = {
-        method: "POST", 
+        method: "POST",
         headers: getAuthHeaders(),
         body: JSON.stringify(groupData),
         redirect: "follow"
     };
-    console.log("Request options", requestOptions);
     return fetchData("groups", requestOptions);
 };

@@ -45,8 +45,8 @@ const PLAYER_POSITIONS = [
 // Cricket ground image URLs for different themes
 const GROUND_IMAGES = {
   light:
-    "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSX6KUsbnMREqEBkTrVHfENbH-6flbQSratnQ&s",
-  dark: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRBb_BCyCI3fLUgCIUgo-b6M70GsD8hwrmTpw&s",
+    "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQIJaQWmxX0fDCHBZKT_w32TwJ6azK3YSCwBg&s",
+  dark: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQIJaQWmxX0fDCHBZKT_w32TwJ6azK3YSCwBg&s",
   // dark: cricketGroundImg
 };
 
@@ -310,6 +310,7 @@ const TeamSelection = () => {
         match_id: match.match_id,
         user_team_name: `${match.team1.team_name}-${match.team2.team_name}`,
         user_team_players: formattedPlayers,
+        total_points: userTotalAmount,
       });
       console.log("Team created successfully:", response);
       if (response.success) {

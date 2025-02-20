@@ -276,7 +276,7 @@ function App() {
           id="home"
           className="relative bg-cover bg-center h-[600px]"
           style={{
-            backgroundImage: 'linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), url("https://images.unsplash.com/photo-1531415074968-036ba1b575da?ixlib=rb-1.2.1&auto=format&fit=crop&w=1920&q=80")'
+            backgroundImage: 'linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), url("https://wallpapers.com/images/high/indian-cricket-men-and-women-z9cmwgu8im2qk1mp.webp")'
           }}
         >
           <div className="absolute inset-0 flex flex-col items-center justify-center text-center px-4">

@@ -14,7 +14,7 @@ import { useTheme } from './ui/theme-provider';
       role: "Batsman",
       team: "India",
       rating: 95,
-      image: "https://images.unsplash.com/photo-1486312338219-ce68d2c6f44d?w=400&h=400&fit=crop",
+      image: "https://cdn.britannica.com/48/252748-050-C514EFDB/Virat-Kohli-India-celebrates-50th-century-Cricket-November-15-2023.jpg",
       stats: {
         matches: 492,
         average: 57.32,
@@ -27,7 +27,7 @@ import { useTheme } from './ui/theme-provider';
       role: "Batsman",
       team: "Australia",
       rating: 92,
-      image: "https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?w=400&h=400&fit=crop",
+      image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSsy6QEPYEW7CqUVbsQ7NfdAPkJPixojhM-sA&s",
       stats: {
         matches: 456,
         average: 54.12,
@@ -40,7 +40,7 @@ import { useTheme } from './ui/theme-provider';
       role: "All-rounder",
       team: "England",
       rating: 90,
-      image: "https://images.unsplash.com/photo-1485827404703-89b55fcc595e?w=400&h=400&fit=crop",
+      image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTKP2_fsm7PYAJ0hP73Y8Sdb4fI5A053rwu5Q&s",
       stats: {
         matches: 378,
         average: 42.34,
@@ -49,15 +49,15 @@ import { useTheme } from './ui/theme-provider';
     },
     {
         id: 4,
-        name: "Ben Stokes",
-        role: "All-rounder",
-        team: "England",
+        name: "Rohit Sharma",
+        role: "Batsman",
+        team: "India",
         rating: 90,
-        image: "https://images.unsplash.com/photo-1485827404703-89b55fcc595e?w=400&h=400&fit=crop",
+        image: "https://ichef.bbci.co.uk/ace/standard/2560/cpsprodpb/a58b/live/65908fc0-e6fa-11ef-a39a-7b0f4e03d69d.jpg",
         stats: {
-          matches: 378,
-          average: 42.34,
-          strikeRate: 95.07,
+          matches: 377,
+          average: 41.34,
+          strikeRate: 90.07,
         },
       },
   ];

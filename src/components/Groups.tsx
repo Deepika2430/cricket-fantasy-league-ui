@@ -177,7 +177,7 @@ export default function GroupsComponent() {
               type="text"
               value={groupName}
               onChange={(e) => setGroupName(e.target.value)}
-              className="w-full p-2 border rounded-lg"
+              className={` ${theme === "dark" ? "border-gray-600 bg-gray-700 text-white placeholder-gray-400" : "border-gray-300 bg-white text-gray-900 placeholder-gray-500"} w-full p-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors`}
               placeholder="Group Name"
               required
             />
@@ -185,7 +185,7 @@ export default function GroupsComponent() {
             <select
               value={selectedMatch}
               onChange={(e) => setSelectedMatch(e.target.value)}
-              className="w-full p-2 border rounded-lg"
+              className={` ${theme === "dark" ? "border-gray-600 bg-gray-700 text-white placeholder-gray-400" : "border-gray-300 bg-white text-gray-900 placeholder-gray-500"} w-full p-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors`}
               required
             >
               <option value="">Select a match</option>
@@ -215,7 +215,7 @@ export default function GroupsComponent() {
               <button type="submit" className="px-4 py-2 bg-blue-600 text-white rounded-lg">
                 Create Group
               </button>
-              <button onClick={() => setShowCreateGroup(false)} className="px-4 py-2 bg-gray-300 rounded-lg">
+              <button onClick={() => setShowCreateGroup(false)} className={`px-4 py-2 ${theme === "dark" ? "bg-gray-600 text-gray-300 hover:bg-gray-500" : "bg-gray-200 text-gray-700 hover:bg-gray-300"} rounded-lg transition-colors`}>
                 Cancel
               </button>
             </div>
@@ -224,7 +224,7 @@ export default function GroupsComponent() {
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           {filteredGroups.map((group) => (
-            <div key={group.id} className="p-4 rounded-lg hover:bg-gray-100 transition">
+            <div key={group.id} className={`p-4 rounded-lg transition-colors ${theme === "dark" ? "bg-gray-800 hover:bg-gray-600" : "hover:bg-gray-100"}`}>
               <div className="flex items-start space-x-3">
                 <img src={group.imageUrl} alt={group.name} className="w-16 h-16 rounded-lg object-cover" />
                 <div className="flex-1">
@@ -236,10 +236,10 @@ export default function GroupsComponent() {
                     </span>
                     <span>Active {group.lastActivity}</span>
                   </div>
-                  {group.preview && <div className="mt-2 p-2 rounded-lg text-sm bg-gray-50">{group.preview}</div>}
+                  {group.preview && <div className={` ${theme === "dark" ? "bg-gray-900 text-gray-300" : "bg-gray-50 text-gray-600 hover:bg-white"} mt-2 p-2 rounded-lg text-sm flex items-start space-x-2`}>{group.preview}</div>}
                 </div>
               </div>
-              <button className="mt-3 w-full px-4 py-2 bg-blue-100 text-blue-600 rounded-lg">
+              <button className={`mt-3 w-full px-4 py-2 rounded-lg transition-colors ${theme === "dark" ? "bg-blue-900/30 text-blue-400 hover:bg-blue-900/50" : "bg-blue-100 text-blue-600 hover:bg-blue-200"}`}>
                 Join Group
               </button>
             </div>

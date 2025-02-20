@@ -165,7 +165,7 @@ const MatchHistory: React.FC = () => {
         </div>
       </div>
       <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-        <DialogContent className={`${theme === "dark" ? "bg-gray-800 text-white" : "bg-white text-gray-900"} max-h-[80vh] overflow-y-auto`}>
+        <DialogContent className={`${theme === "dark" ? "bg-gray-800 text-white" : "bg-white text-gray-900"} max-h-[80vh] overflow-y-auto scrollbar-none`}>
           <DialogTitle>Team Details</DialogTitle>
           <div>
             {selectedMatchPlayers && (

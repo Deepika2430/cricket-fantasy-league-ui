@@ -162,7 +162,7 @@ const LiveScore = () => {
                 <h3 className="text-2xl font-bold mb-1">{scoreData.ball_data.batting_team}</h3>
                 <p className="text-3xl font-bold text-[#9b87f5]">{scoreData.score}/{scoreData.wickets}</p>
                 <p className="text-sm text-gray-400">
-                  Overs: {scoreData.ball_data.over_number}.{scoreData.ball_data.ball_number % scoreData.ball_data.over_number}
+                  {/* Overs: {scoreData.ball_data.over_number}.{scoreData.ball_data.ball_number % scoreData.ball_data.over_number} */}
                 </p>
               </div>
             </div>
@@ -199,7 +199,7 @@ const LiveScore = () => {
               </div>
               <div>
                 <h3 className="text-2xl font-bold mb-1">{scoreData.ball_data.bowling_team}</h3>
-                <p className="text-3xl font-bold">Yet to bat</p>
+                <p className="text-2xl font-bold">Yet to bat</p>
               </div>
             </div>
           </div>

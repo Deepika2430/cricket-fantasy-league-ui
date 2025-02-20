@@ -8,7 +8,7 @@ const blogs = [
     id: 1,
     title: "Top 10 Cricket Moments of 2023",
     excerpt: "Relive the most exciting moments from the world of cricket in 2023...",
-    image: "https://images.unsplash.com/photo-1531415074968-036ba1b575da?w=500&q=80",
+    image: "https://statico.sportskeeda.com/editor/2019/01/b98a4-15471823307583-800.jpg",
     date: "Mar 10, 2024",
     category: "Highlights"
   },
@@ -16,7 +16,7 @@ const blogs = [
     id: 2,
     title: "Rising Stars: Next Generation of Cricket",
     excerpt: "Meet the young talents who are set to take the cricket world by storm...",
-    image: "https://images.unsplash.com/photo-1587385789097-0197a7fbd179?w=500&q=80",
+    image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQD5HlopGe-RC577lc5Y7KyOTgWPpPJHAottXxvPirxL-DFmcSgcmQeH7JRDVHn4qdsv5k&usqp=CAU",
     date: "Mar 8, 2024",
     category: "Players"
   }

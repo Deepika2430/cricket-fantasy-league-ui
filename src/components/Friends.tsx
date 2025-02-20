@@ -62,6 +62,7 @@ export default function FriendsComponent() {
 
   const handleRemoveFriend = async (friend) => {
     try {
+      console.log(friend)
       await removeFriend(friend?.user_id);
       await fetchUserFriends(); // Refresh the friends list
     } catch (error) {
@@ -77,7 +78,7 @@ export default function FriendsComponent() {
     <div className={`w-full h-full p-4 ${theme === "dark" ? "bg-gray-900" : "bg-white"}`}>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         {/* Friends List */}
-        <div className={`p-6 ${theme === "dark" ? 'bg-gray-800 text-white' : 'bg-white text-gray-900'} rounded-xl shadow-lg transition-colors`}>
+        <div className={`p-6 ${theme === "dark" ? 'bg-gray-800 text-white hover:scrollbar-thin  scrollbar-thumb-gray-700 scrollbar-track-gray-900' : 'bg-white text-gray-900 hover:scrollbar-thin scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-gray-100'} rounded-xl shadow-lg transition-colors overflow-y-auto h-[600px] md:h-[530px] scrollbar-none `}>
           <h2 className="text-2xl font-bold mb-4">Friends</h2>
           <div className="relative mb-6">
             <input
@@ -139,7 +140,7 @@ export default function FriendsComponent() {
 
         <div className="space-y-6">
           {/* Received Requests */}
-          <div className={`p-6 ${theme === "dark" ? 'bg-gray-800 text-white' : 'bg-white text-gray-900'} rounded-xl shadow-lg transition-colors`}>
+          <div className={`p-6 ${theme === "dark" ? 'bg-gray-800 text-white hover:scrollbar-thin  scrollbar-thumb-gray-700 scrollbar-track-gray-900' : 'bg-white text-gray-900 hover:scrollbar-thin scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-gray-100'} rounded-xl shadow-lg transition-colors overflow-y-auto h-[300px] md:h-[250px] scrollbar-none `}>
             <h2 className="text-2xl font-bold mb-4">Received Requests</h2>
             <div className="space-y-4">
               {receivedRequests?.map(request => (
@@ -160,7 +161,7 @@ export default function FriendsComponent() {
                     onClick={() => handleAcceptRequest(request)}>
                       <Check className="w-5 h-5" />
                     </button>
-                    <button className={`p-2 ${theme === "dark" ? "bg-red-900/30 text-red-400 hover:bg-red-900/50" : "bg-red-100 text-red-600 hover:bg-red-200"} rounded-lg transition-colors`} onClick={() => handleRemoveFriend(request.friend_id)}>
+                    <button className={`p-2 ${theme === "dark" ? "bg-red-900/30 text-red-400 hover:bg-red-900/50" : "bg-red-100 text-red-600 hover:bg-red-200"} rounded-lg transition-colors`} onClick={() => handleRemoveFriend(request)}>
                       <X className="w-5 h-5"
                       />
                     </button>
@@ -174,7 +175,7 @@ export default function FriendsComponent() {
           </div>
 
           {/* Sent Requests (Pending Only) */}
-          <div className={`p-6 ${theme === "dark" ? 'bg-gray-800 text-white' : 'bg-white text-gray-900'} rounded-xl shadow-lg transition-colors`}>
+          <div className={`p-6 ${theme === "dark" ? 'bg-gray-800 text-white hover:scrollbar-thin  scrollbar-thumb-gray-700 scrollbar-track-gray-900' : 'bg-white text-gray-900 hover:scrollbar-thin scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-gray-100'} rounded-xl shadow-lg transition-colors overflow-y-auto h-[300px] md:h-[250px] scrollbar-none `}>
             <h2 className="text-2xl font-bold mb-4">Sent Requests</h2>
             <div className="space-y-4">
               {sentRequests.map(request => (
@@ -202,7 +203,7 @@ export default function FriendsComponent() {
                   </div>
                   <button
                     className={`p-2 ${theme === "dark" ? "bg-red-900/30 text-red-400 hover:bg-red-900/50" : "bg-red-100 text-red-600 hover:bg-red-200"} rounded-lg transition-colors`}
-                    onClick={() => handleRemoveFriend(request.friend_id)}
+                    onClick={() => handleRemoveFriend(request)}
                   >
                     <X className="w-5 h-5" />
                   </button>

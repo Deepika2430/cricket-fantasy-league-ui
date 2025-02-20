@@ -74,7 +74,6 @@ export const removeFriend = async (friendUserId) => {
     const userId = getUserFromToken(token);
     myHeaders.append("Content-Type", "application/json");
     myHeaders.append("Authorization", `Bearer ${token}`);
-
     const raw = JSON.stringify({
         "user_id": userId,
         "friend_user_id": friendUserId
@@ -86,7 +85,7 @@ export const removeFriend = async (friendUserId) => {
         body: raw,
         redirect: "follow"
     };
-    await fetchData(`friends`, requestOptions);
+    const response = await fetchData(`friends`, requestOptions);
     return { message: "Friend removed successfully" };
 };
 
