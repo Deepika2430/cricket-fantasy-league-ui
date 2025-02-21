@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import Cookies from 'js-cookie';
 import { Route, Routes, Navigate, BrowserRouter as Router } from 'react-router-dom';
 import Dashboard from './components/Dashboard';
@@ -12,23 +12,26 @@ import Friends from './components/Friends';
 import Account from './components/Account';
 import Signout from './components/Signout';
 import { getUserFromToken } from './services/AuthService';
-import { AuthProvider } from './context/AuthContext';
+import { AuthProvider, useAuth } from './context/AuthContext';
 import NotFound from './components/NotFound'
 import MainLayout from './components/MainLayout';
 import Login from './components/Login';
 import CricketLiveScore from './components/CricketLiveScore';
-
+import { SidebarProvider } from './components/ui/sidebar'; // Import SidebarProvider
 
 function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [userId, setUserId] = useState('');
+  const auth = useAuth();
+  const roleRef = useRef(auth?.role);
 
   useEffect(() => {
     if (isAuthenticated)
       setUserId(getUserFromToken(Cookies.get('authToken')));
+    roleRef.current = auth?.role;
     if (userId)
       setIsAuthenticated(true);
-  });
+  }, [isAuthenticated, userId, auth]);
 
   return (
     <AuthProvider>
@@ -36,7 +39,7 @@ function App() {
           <Route path="/" element={<MainLayout />} />
           <Route path="/livescore" element={<CricketLiveScore />} />
           <Route path="/login" element={<Login />} />
-          <Route element={<Layout />}>
+          <Route element={<Layout role={roleRef.current || 'user'}/>}>
               <Route path="/home" element={<Home />} />
               <Route path="/matches" element={<Matches />} />
               <Route path="/match-history" element={<MatchHistory />} />

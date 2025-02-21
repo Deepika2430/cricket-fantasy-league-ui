@@ -34,20 +34,25 @@ export default function AuthForm() {
 
     onSubmit: async (values) => {
       try {
-        let token;
+        let token, role, response;
         if (isLogin) {
-          const response = await login(values.email, values.password);
+          response = await login(values.email, values.password);
           token = response?.data?.token;
+          role = response?.data?.role; // Get role from response
         } else {
-          const response = await signup(values.username, values.email, values.password);
+          response = await signup(values.username, values.email, values.password);
           token = response?.data?.token;
+          role = response?.data?.role; // Get role from response
           toast.success('Registration successful! Please login.');
           setIsRegister(false);
           return;
         }
         formik.resetForm();
-        await setToken(token);
-        navigate("/home");
+        await setToken(token, role); // Set token and role in context
+        if (role === 'admin')
+          navigate("/admin-dashboard");
+        else
+          navigate("/home");
       } catch (error) {
         console.log(error);
         toast.error(error?.message);
