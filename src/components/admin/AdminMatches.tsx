@@ -1,14 +1,29 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { useTheme } from "../ui/theme-provider";
 import { motion } from "framer-motion";
 import { useSidebar } from "../ui/sidebar";
-import { Dialog,DialogTrigger, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter, } from "../ui/dialog";
+import {
+  Dialog,
+  DialogTrigger,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+  DialogFooter,
+} from "../ui/dialog";
 import { Button } from "../ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
-import { getMatches, getTeamPlayers } from "../../services/Matches";
-import type { Match, Player } from "../../types/match";
+import {
+  getMatches,
+  getTeamPlayers,
+  getTeams,
+  createMatch,
+} from "../../services/Matches";
+import type { Match, Player, Team } from "../../types/match";
 import { Loader2 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const Matches = () => {
   const [matches, setMatches] = useState<Match[]>([]);
@@ -18,15 +33,23 @@ const Matches = () => {
   const [selectedMatch, setSelectedMatch] = useState<Match | null>(null);
   const [team1Players, setTeam1Players] = useState<Player[]>([]);
   const [team2Players, setTeam2Players] = useState<Player[]>([]);
+  const [teams, setTeams] = useState<Team[]>([]);
+  const [team1, setTeam1] = useState<Team | null>(null);
+  const [team2, setTeam2] = useState<Team | null>(null);
+  const [venue, setVenue] = useState("");
+  const [matchDate, setMatchDate] = useState("");
   const { theme } = useTheme();
   const { state } = useSidebar();
   const navigate = useNavigate();
+  const dialogRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     fetchMatches();
+    fetchTeams();
   }, []);
 
-const playerLogo = "https://www.my11circle.com/fantasy-sports/wp-content/uploads/2022/07/player-icon.png";
+  const playerLogo =
+    "https://www.my11circle.com/fantasy-sports/wp-content/uploads/2022/07/player-icon.png";
 
   useEffect(() => {
     fetchTeamPlayers();
@@ -68,12 +91,26 @@ const playerLogo = "https://www.my11circle.com/fantasy-sports/wp-content/uploads
     }
   };
 
+  const fetchTeams = async () => {
+    try {
+      const data = await getTeams();
+      setTeams(data);
+      console.log(data);
+    } catch (error) {
+      console.error("Failed to fetch teams:", error);
+    }
+  };
+
   const fetchTeamPlayers = async () => {
     if (selectedMatch) {
       setLoadingPlayers(true);
       try {
-        const team1PlayersData = await getTeamPlayers(selectedMatch.team1.team_id);
-        const team2PlayersData = await getTeamPlayers(selectedMatch.team2.team_id);
+        const team1PlayersData = await getTeamPlayers(
+          selectedMatch.team1.team_id
+        );
+        const team2PlayersData = await getTeamPlayers(
+          selectedMatch.team2.team_id
+        );
         const team1 = team1PlayersData?.team?.players;
         const team2 = team2PlayersData?.team?.players;
         setTeam1Players(Object.values(team1));
@@ -98,17 +135,53 @@ const playerLogo = "https://www.my11circle.com/fantasy-sports/wp-content/uploads
     return `${hours}h ${minutes}m ${seconds}s`;
   };
 
+  const handleCreateMatch = async () => {
+    if (team1 && team2 && venue && matchDate) {
+      try {
+        const response = await createMatch({
+          team1_id: team1.team_id,
+          team2_id: team2.team_id,
+          venue,
+          match_date: matchDate,
+        });
+        console.log(response);
+        fetchMatches();
+        toast.success("Match created successfully!");
+        if (dialogRef.current) {
+          dialogRef.current.click(); // Close the dialog
+        }
+      } catch (error) {
+        console.error("Failed to create match:", error);
+        toast.error("Failed to create match.");
+      }
+    }
+  };
+
   function teamCreation(
     event: React.MouseEvent<HTMLButtonElement, MouseEvent>
   ): void {
     event.preventDefault();
     if (selectedMatch) {
       console.log(selectedMatch.match_id);
-    //   navigate("/team", { state: { match: selectedMatch } });
+      //   navigate("/team", { state: { match: selectedMatch } });
     }
   }
 
   const handleCardClick = (match: Match) => setSelectedMatch(match);
+
+  const handleTeam1Change = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const selectedTeam =
+      teams.find((team) => team.team_id === Number(e.target.value)) || null;
+    setTeam1(selectedTeam);
+    console.log(selectedTeam, "Team 1");
+  };
+
+  const handleTeam2Change = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const selectedTeam =
+      teams.find((team) => team.team_id === Number(e.target.value)) || null;
+    setTeam2(selectedTeam);
+    console.log(selectedTeam, "Team 2");
+  };
 
   if (loading) {
     return (
@@ -124,9 +197,192 @@ const playerLogo = "https://www.my11circle.com/fantasy-sports/wp-content/uploads
         theme === "dark" ? "bg-gray-900 text-white" : "bg-gray-100 text-black"
       }`}
     >
-      <h2 className="text-4xl font-bold mb-6 text-center">
+      <ToastContainer />
+      <div className="flex justify-end mb-4">
+        <Dialog>
+          <DialogTrigger asChild>
+            <Button
+              className={`p-4 ${
+                theme === "dark"
+                  ? "bg-gray-800 text-white border-gray-800"
+                  : "bg-white text-black"
+              }`}
+            >
+              Create Match
+            </Button>
+          </DialogTrigger>
+          <DialogContent
+            ref={dialogRef}
+            className={`max-w-3xl max-h-[90vh] overflow-y-auto scrollbar-none ${
+              theme === "dark"
+                ? "bg-gray-900 text-white border-gray-800"
+                : "bg-gray-100 text-black"
+            }`}
+          >
+            <DialogHeader>
+              <DialogTitle>Create Match</DialogTitle>
+            </DialogHeader>
+            <div
+              className={`flex justify-between items-center p-4 ${
+                theme === "dark"
+                  ? "bg-gray-900 text-white border-gray-800"
+                  : "bg-gray-100 text-black"
+              }`}
+            >
+              <div className="flex flex-col w-1/2 pr-2">
+                {team1 && (
+                  <div className="flex items-center mb-2">
+                    <img
+                      src={team1.logo}
+                      alt={team1.name}
+                      className="h-8 w-8 rounded-full mr-2"
+                    />
+                    <span>{team1.name}</span>
+                  </div>
+                )}
+                <label htmlFor="team1" className="mb-2">
+                  Select Team 1
+                </label>
+                <select
+                  id="team1"
+                  className={`p-2 border rounded ${
+                    theme === "dark"
+                      ? "bg-gray-900 text-white border-gray-700"
+                      : "bg-gray-100 text-black border-gray-300"
+                  }`}
+                  value={team1?.team_id || ""}
+                  onChange={handleTeam1Change}
+                >
+                  <option value="" disabled>
+                    Select Team 1
+                  </option>
+                  {teams
+                    .filter((team) => team.team_id !== team2?.team_id)
+                    .map((team) => (
+                      <option key={team.team_id} value={team.team_id}>
+                        {team.name}
+                      </option>
+                    ))}
+                </select>
+              </div>
+              <div className="flex flex-col w-1/2 pl-2">
+                {team2 && (
+                  <div className="flex items-center mb-2">
+                    <img
+                      src={team2.logo}
+                      alt={team2.name}
+                      className="h-8 w-8 rounded-full mr-2"
+                    />
+                    <span>{team2.name}</span>
+                  </div>
+                )}
+                <label htmlFor="team2" className="mb-2">
+                  Select Team 2
+                </label>
+                <select
+                  id="team2"
+                  className={`p-2 border rounded ${
+                    theme === "dark"
+                      ? "bg-gray-900 text-white border-gray-700"
+                      : "bg-gray-100 text-black border-gray-300"
+                  }`}
+                  value={team2?.team_id || ""}
+                  onChange={handleTeam2Change}
+                >
+                  <option value="" disabled>
+                    Select Team 2
+                  </option>
+                  {teams
+                    .filter((team) => team.team_id !== team1?.team_id)
+                    .map((team) => (
+                      <option key={team.team_id} value={team.team_id}>
+                        {team.name}
+                      </option>
+                    ))}
+                </select>
+              </div>
+            </div>
+            <div className="flex flex-col p-4">
+              <label
+                htmlFor="venue"
+                className={` ${
+                  theme === "dark"
+                    ? "text-white bg-gray-900"
+                    : "text-black bg-gray-100"
+                } mb-2`}
+              >
+                Venue
+              </label>
+              <input
+                id="venue"
+                type="text"
+                className={`p-2 border rounded ${
+                  theme === "dark"
+                    ? "text-white bg-gray-900 border-gray-700"
+                    : "text-black bg-gray-100 border-gray-300"
+                }`}
+                value={venue}
+                onChange={(e) => setVenue(e.target.value)}
+              />
+            </div>
+            <div className="flex flex-col p-4">
+              <label
+                htmlFor="matchDate"
+                className={`mb-2 ${
+                  theme === "dark"
+                    ? "text-white bg-gray-900"
+                    : "text-black bg-gray-100"
+                }`}
+              >
+                Match Start Date & Time
+              </label>
+              <input
+                id="matchDate"
+                type="datetime-local"
+                className={`p-2 border rounded 
+    ${
+      theme === "dark"
+        ? "text-white bg-gray-900 border-gray-700"
+        : "text-black bg-gray-100 border-gray-300"
+    }
+    focus:ring-2 focus:ring-white
+  `}
+                value={matchDate}
+                onChange={(e) => setMatchDate(e.target.value)}
+                style={{
+                  WebkitAppearance: "none",
+                  MozAppearance: "none",
+                  appearance: "none",
+                }}
+              />
+              <style>
+                {`
+    /* Make the date picker icon white in dark mode */
+    #matchDate::-webkit-calendar-picker-indicator {
+      filter: ${theme === "dark" ? "invert(1)" : "none"};
+      cursor: pointer;
+    }
+  `}
+              </style>
+            </div>
+            <DialogFooter>
+              <Button
+                onClick={handleCreateMatch}
+                className={`${
+                  theme === "dark"
+                    ? "bg-gray-800 text-white"
+                    : "bg-white text-black"
+                }`}
+              >
+                Submit
+              </Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
+      </div>
+      <h4 className="text-4xl font-bold mb-6 text-center">
         Live & Upcoming Matches
-      </h2>
+      </h4>
       <div
         className={`grid gap-8 ${
           state === "collapsed"
@@ -145,11 +401,11 @@ const playerLogo = "https://www.my11circle.com/fantasy-sports/wp-content/uploads
                 onClick={() => handleCardClick(match)}
               >
                 <div className="flex justify-between items-center">
-                {match.status === "live" && (
-  <div className="absolute top-2 right-2 px-1.5 py-0.5 text-xs bg-red-500 text-white rounded-md animate-none">
-    ⚪ LIVE
-  </div>
-)}
+                  {match.status === "live" && (
+                    <div className="absolute top-2 right-2 px-1.5 py-0.5 text-xs bg-red-500 text-white rounded-md animate-none">
+                      ⚪ LIVE
+                    </div>
+                  )}
 
                   <img
                     src={match?.team1?.logo}
@@ -183,7 +439,7 @@ const playerLogo = "https://www.my11circle.com/fantasy-sports/wp-content/uploads
 
             {selectedMatch && (
               <DialogContent
-              className={`max-w-3xl max-h-[90vh] overflow-y-auto scrollbar-none ${
+                className={`max-w-3xl max-h-[90vh] overflow-y-auto scrollbar-none ${
                   theme === "dark"
                     ? "bg-gray-900 text-white"
                     : "bg-gray-100 text-black"
@@ -271,7 +527,6 @@ const playerLogo = "https://www.my11circle.com/fantasy-sports/wp-content/uploads
                     </div>
                   </div>
                 )}
-
 
                 <DialogFooter>
                   {selectedMatch.status !== "live" && (
