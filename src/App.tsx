@@ -17,6 +17,7 @@ import NotFound from './components/NotFound'
 import MainLayout from './components/MainLayout';
 import Login from './components/Login';
 import CricketLiveScore from './components/CricketLiveScore';
+import AdminMatches from './components/admin/AdminMatches';
 
 
 function App() {
@@ -36,9 +37,10 @@ function App() {
           <Route path="/" element={<MainLayout />} />
           <Route path="/livescore" element={<CricketLiveScore />} />
           <Route path="/login" element={<Login />} />
-          <Route element={<Layout />}>
+          <Route element={<Layout role={"admin"} />}>
               <Route path="/home" element={<Home />} />
               <Route path="/matches" element={<Matches />} />
+              <Route path="/admin-matches" element={<AdminMatches />} />
               <Route path="/match-history" element={<MatchHistory />} />
               <Route path="/team" element={<Team />} />
               <Route path="/groups" element={<Groups />} />

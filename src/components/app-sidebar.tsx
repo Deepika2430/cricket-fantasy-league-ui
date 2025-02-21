@@ -1,15 +1,6 @@
 import { useState, useEffect } from "react";
 import {
-  Handshake,
-  Swords,
-  Home,
-  CircleUserRound,
-  Settings,
-  Users,
-  HelpCircle,
-  Send,
   ChevronDown,
-  History,
 } from "lucide-react";
 
 import {
@@ -34,62 +25,62 @@ import { useTheme } from "./ui/theme-provider";
 import { useSidebar } from "./ui/sidebar";
 import { Link, useLocation } from "react-router-dom";
 
-const sidebarItems = {
-  topItems: [
-    {
-      title: "Home",
-      url: "/home",
-      icon: Home,
-    },
-    {
-      title: "Matches",
-      url: "/matches",
-      icon: Swords,
-    },
-    {
-      title: "Match History",
-      url: "/match-history",
-      icon: History,
-    },
-    {
-      title: "Groups",
-      url: "/groups",
-      icon: Users,
-    },
-    {
-      title: "Friends",
-      url: "/friends",
-      icon: Users,
-    },
-    {
-      title: "Settings",
-      url: "#",
-      icon: Settings,
-    },
-  ],
-  helpItems: [
-    {
-      title: "Support",
-      url: "/support",
-      icon: HelpCircle,
-    },
-    {
-      title: "Feedback",
-      url: "/feedback",
-      icon: Send,
-    },
-  ],
-  footerItems: [
-    {
-      title: "My Profile",
-      url: "/my-profile",
-      icon: CircleUserRound,
-    },
-  ],
-};
+// const sidebarItems = {
+//   topItems: [
+//     {
+//       title: "Home",
+//       url: "/home",
+//       icon: Home,
+//     },
+//     {
+//       title: "Matches",
+//       url: "/matches",
+//       icon: Swords,
+//     },
+//     {
+//       title: "Match History",
+//       url: "/match-history",
+//       icon: History,
+//     },
+//     {
+//       title: "Groups",
+//       url: "/groups",
+//       icon: Users,
+//     },
+//     {
+//       title: "Friends",
+//       url: "/friends",
+//       icon: Users,
+//     },
+//     {
+//       title: "Settings",
+//       url: "#",
+//       icon: Settings,
+//     },
+//   ],
+//   helpItems: [
+//     {
+//       title: "Support",
+//       url: "/support",
+//       icon: HelpCircle,
+//     },
+//     {
+//       title: "Feedback",
+//       url: "/feedback",
+//       icon: Send,
+//     },
+//   ],
+//   footerItems: [
+//     {
+//       title: "My Profile",
+//       url: "/my-profile",
+//       icon: CircleUserRound,
+//     },
+//   ],
+// };
 
 
-export function AppSidebar() {
+export function AppSidebar({sidebarItems}) {
   const [activeItem, setActiveItem] = useState<string | null>(null);
   const { theme } = useTheme();
   const { state } = useSidebar();
