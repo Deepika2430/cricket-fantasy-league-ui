@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import avatarImage from '../data/cricket-player-ready-to-hit.png';
-import { Coins, CalendarDays, MapPin, Trophy, Activity, Crown, Shield } from 'lucide-react';
+import { Coins, CalendarDays, MapPin, Trophy, Activity, Crown, Shield, X } from 'lucide-react';
 import { Card, CardContent, CardHeader } from './ui/card';
 import { Badge } from './ui/badge';
 import { cn } from './ui/lib/utils';
@@ -9,6 +9,7 @@ import { useAuth } from '../context/AuthContext';
 import { useTheme } from './ui/theme-provider';
 import { Dialog, DialogContent, DialogTitle, DialogClose } from './ui/dialog';
 import { getPlayersInMatch } from '../services/Matches';
+import LeaderboardComponent from './LeaderBoard'; // Import the LeaderboardComponent
 
 // PlayerRole component
 const PlayerRole: React.FC<{ role: string }> = ({ role }) => {
@@ -114,7 +115,8 @@ const MatchHistory: React.FC = () => {
   const [userMatches, setUserMatches] = useState<any[]>([]);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [selectedMatchPlayers, setSelectedMatchPlayers] = useState<any[]>([]);
-  const { userId } = useAuth();
+  const [isLeaderboardOpen, setIsLeaderboardOpen] = useState(false); // State to manage leaderboard visibility
+  const { userId, role } = useAuth(); // Include role from useAuth
   const { theme } = useTheme();
 
   useEffect(() => {
@@ -146,14 +148,28 @@ const MatchHistory: React.FC = () => {
   return (
     <div className={`flex flex-col h-screen p-4 ${theme === "dark" ? "bg-gray-900 text-white" : "bg-white text-gray-900"}`}>
       <div className="flex justify-between items-center mb-4">
-        <img
-          src={userDetails?.data?.ProfilePictureURL || avatarImage}
-          alt="Avatar"
-          className={`w-16 h-16 rounded-full border-2 ${theme === "dark" ? "border-gray-600" : "border-gray-300"} shadow-md hover:shadow-lg transition-shadow duration-300`}
-        />
-        <div className="flex items-center text-lg font-bold">
-          <Coins className="w-6 h-6 text-yellow-500 mr-2" />
-          {userDetails?.data?.TotalPoints}
+        <div className="flex items-center">
+          <img
+            src={userDetails?.data?.ProfilePictureURL || avatarImage}
+            alt="Avatar"
+            className={`w-16 h-16 rounded-full border-2 ${theme === "dark" ? "border-gray-600" : "border-gray-300"} shadow-md hover:shadow-lg transition-shadow duration-300`}
+          />
+        </div>
+        <div className="flex items-center gap-4">
+          <div className="flex items-center text-lg font-bold">
+            <Coins className="w-6 h-6 text-yellow-500 mr-2" />
+            {userDetails?.data?.TotalPoints}
+          </div>
+          <button
+            onClick={() => setIsLeaderboardOpen(true)}
+            className={`px-4 py-2 rounded-lg font-semibold transition-colors flex items-center ${
+              theme === "dark"
+                ? 'bg-indigo-900/30 text-indigo-400 hover:bg-indigo-900/40'
+                : 'bg-indigo-100 text-indigo-600 hover:bg-indigo-200'
+            }`}
+          >
+            <Trophy className="w-5 h-5" />
+          </button>
         </div>
       </div>
       <div className="mt-4 flex-grow">
@@ -164,6 +180,23 @@ const MatchHistory: React.FC = () => {
           ))}
         </div>
       </div>
+      {isLeaderboardOpen && (
+        <div className={`fixed inset-0 z-50 flex items-center justify-center ${theme === "dark" ? "bg-gray-900/80" : "bg-white/80"}`}>
+          <div className="relative w-full max-w-4xl p-4">
+            <button
+              onClick={() => setIsLeaderboardOpen(false)}
+              className={`absolute top-2 right-2 p-2 rounded-full transition-colors ${
+                theme === "dark"
+                  ? 'bg-red-900/30 text-red-400 hover:bg-red-900/40'
+                  : 'bg-red-100 text-red-600 hover:bg-red-200'
+              }`}
+            >
+              <X className="w-5 h-5" />
+            </button>
+            <LeaderboardComponent />
+          </div>
+        </div>
+      )}
       <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
         <DialogContent className={`${theme === "dark" ? "bg-gray-800 text-white" : "bg-white text-gray-900"} max-h-[80vh] overflow-y-auto scrollbar-none`}>
           <DialogTitle>Team Details</DialogTitle>

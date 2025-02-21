@@ -28,6 +28,7 @@ export const login = async (email: string, password: string) => {
   const response = await fetch(`${config.apiBaseUrl}/auth/login`, requestOptions);
 
   const data = await response.json();
+  console.log("After login: ", data);
 
   if (!response.ok) {
     throw new Error(data.message || 'Login failed');

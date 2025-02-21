@@ -4,6 +4,7 @@ import { AppSidebar } from "./app-sidebar";
 import { Header } from "./Header";
 import { Outlet } from "react-router-dom";
 import { useTheme } from "./ui/theme-provider";
+import { useAuth } from "../context/AuthContext";
 import {
   Handshake,
   Swords,
@@ -17,9 +18,9 @@ import {
   History,
 } from "lucide-react";
 
-export default function Layout({role}) {
+export default function Layout({role}: {role: string}) {
+  console.log(role);
   const { theme } = useTheme();
-  // const role = "admin";
   let sidebarItems = {
     topItems: [
       {
@@ -119,10 +120,11 @@ export default function Layout({role}) {
     };
   }
   return (
-    <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
-      <SidebarProvider className="h-screen flex w-[100%]">
-        <div className="flex flex-col h-screen w-[100%]">
-          <Header />
+    <SidebarProvider> {/* Wrap with SidebarProvider */}
+      <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
+        <div className="h-screen flex w-[100%]">
+          <div className="flex flex-col h-screen w-[100%]">
+            <Header />
 
           {/* Sidebar and Main Content Wrapper */}
           <div className="flex flex-1 overflow-hidden">
@@ -144,7 +146,8 @@ export default function Layout({role}) {
             </main>
           </div>
         </div>
-      </SidebarProvider>
-    </ThemeProvider>
+        </div>
+      </ThemeProvider>
+    </SidebarProvider>
   );
 }

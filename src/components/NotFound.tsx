@@ -10,10 +10,10 @@ const NotFound: React.FC = () => {
             <p className="text-lg mb-6">The page you are looking for does not exist.</p>
             <button 
                 className={`flex items-center px-4 py-2 text-white rounded transition duration-300 ${theme === 'dark' ? 'bg-blue-600 hover:bg-blue-700' : 'bg-blue-500 hover:bg-blue-600'}`}
-                onClick={() => window.location.href = '/home'}
+                onClick={() => window.history.back()}
             >
                 <Home className="mr-2" />
-                Go to Home
+                Go to Previous Page
             </button>
         </div>
     );
