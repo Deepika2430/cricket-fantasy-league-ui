@@ -10,7 +10,6 @@ import Team from './components/TeamSelection';
 import Groups from './components/Groups';
 import Friends from './components/Friends';
 import Account from './components/Account';
-import Signout from './components/Signout';
 import { getUserFromToken } from './services/AuthService';
 import { AuthProvider, useAuth } from './context/AuthContext';
 import NotFound from './components/NotFound'
@@ -18,6 +17,7 @@ import MainLayout from './components/MainLayout';
 import Login from './components/Login';
 import CricketLiveScore from './components/CricketLiveScore';
 import AdminMatches from './components/admin/AdminMatches';
+import AdminDashboard from './components/admin/AdminDashboard';
 import {isAdmin} from './utils/authUtils';
 
 function App() {
@@ -43,10 +43,11 @@ function App() {
           <Route path="/login" element={<Login />} />
           {isAdmin() ? 
           <Route element={<Layout role={"admin"}/>} >
-            <Route path="/admin-dashboard" element={<AdminMatches />} />
+            <Route path="/admin-dashboard" element={<AdminDashboard />} />
             <Route path="/admin-matches" element={<AdminMatches />} />
             <Route path="/admin-teams" element={<>Teams</>} />
             <Route path="/admin-players" element={<>Players</>} />
+            <Route path="/my-profile" element={<Account />} />
           </Route> : 
           <Route element={<Layout role={'user'}/>}>
               <Route path="/home" element={<Home />} />
