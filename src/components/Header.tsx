@@ -19,6 +19,7 @@ export function Header() {
     console.log(token);
     if (token) {
       Cookies.remove('authToken');
+      Cookies.remove('role');
     }
     navigate('/login');
   };

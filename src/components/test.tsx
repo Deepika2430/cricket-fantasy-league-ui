@@ -18,6 +18,7 @@ import Login from "./components/Login";
 import CricketLiveScore from "./components/CricketLiveScore";
 import AdminMatches from "./components/admin/AdminMatches";
 import AdminDashboard from "./components/admin/AdminDashboard";
+import { isAdmin } from "./utils/authUtils";
 
 function AppRoutes() {
   const { role } = useAuth(); // Get role from AuthContext
@@ -34,7 +35,7 @@ function AppRoutes() {
   }, []);
 
   if (!isAuthenticated) {
-    return <Navigate to="/" />;
+    return <Navigate to="/login" />;
   }
 
   return (
@@ -72,7 +73,9 @@ function AppRoutes() {
 function App() {
   return (
     <AuthProvider>
-      <AppRoutes />
+      <Router>
+        <AppRoutes />
+      </Router>
     </AuthProvider>
   );
 }

@@ -34,6 +34,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   const logout = () => {
     Cookies.remove('authToken');
+    Cookies.remove('token');
     setAuthState({ userId: null, token: null, role: null });
   };
 
